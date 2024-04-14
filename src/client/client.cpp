@@ -1,12 +1,27 @@
 //
 // Created by Shon on 12.04.2024.
 //
+#include <SFML/Graphics.hpp>
 #include <iostream>
 
 int main() {
-    int n;
-    std::cin >> n;
-    std::cout << "Hello from client\n";
+    std::cout << "Hello from client!\n";
+
+    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+    sf::CircleShape shape(100.f);
+    shape.setFillColor(sf::Color::Green);
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        window.clear();
+        window.draw(shape);
+        window.display();
+    }
 
     return 0;
 }

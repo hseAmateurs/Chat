@@ -5,8 +5,9 @@
 
 int main() {
     int n;
-    std::cin >> n;
     std::cout << "Hello from server\n";
+    std::cin >> n;
+    std::cout << "Your num is " << n;
 
     return 0;
 }
