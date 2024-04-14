@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(src/client)
 add_subdirectory(src/server)
 
-add_custom_target(run_all
+add_custom_target(both
         COMMAND start $<TARGET_FILE:Server>
         COMMAND start $<TARGET_FILE:Client>
         DEPENDS Server Client
