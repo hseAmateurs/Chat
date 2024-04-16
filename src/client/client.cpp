@@ -1,6 +1,6 @@
 //
 // Created by Shon on 12.04.2024.
-//
+// Hello from client and Sonya
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
