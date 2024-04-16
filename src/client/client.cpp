@@ -5,7 +5,7 @@
 #include <iostream>
 
 int main() {
-    std::cout << "Hello from client!\n";
+    std::cout << "Hello from client6\n";
 
     sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
     sf::CircleShape shape(100.f);
