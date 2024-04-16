@@ -1,11 +1,11 @@
 //
 // Created by Shon on 12.04.2024.
-//
+// Hello from client and Sonya
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
 int main() {
-    std::cout << "Hello from client!\n";
+    std::cout << "Hello from client6\n";
 
     sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
     sf::CircleShape shape(100.f);
