@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="run_all" type="CompoundRunConfigurationType">
+    <toRun name="Client" targetId="CMakeBuildProfile:win_debug" type="CMakeRunConfiguration" />
+    <toRun name="Server" targetId="CMakeBuildProfile:win_debug" type="CMakeRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>
