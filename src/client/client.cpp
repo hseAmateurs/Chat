@@ -1,10 +1,11 @@
-//
-// Created by Shon on 12.04.2024.
-//
-#include <iostream>
+#include "mainwindow.h"
 
-int main() {
-    std::cout << "Hello from client!\n";
+#include <QApplication>
 
-    return 0;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
 }
