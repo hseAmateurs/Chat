@@ -14,6 +14,9 @@ set(SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        loginsystem.cpp
+        loginsystem.h
+        loginsystem.ui
 )
 
 add_executable(Client
