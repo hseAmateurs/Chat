@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Авторизация</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(125, 212, 240);</string>
+  </property>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
@@ -96,7 +99,7 @@
      <string>Пароль:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="login">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -110,7 +113,7 @@
 border-color: rgb(229, 229, 229);</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="pass">
     <property name="geometry">
      <rect>
       <x>120</x>

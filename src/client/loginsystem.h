@@ -2,6 +2,7 @@
 #define LOGINSYSTEM_H
 
 #include <QDialog>
+#include "Authorisation.h"
 
 namespace Ui {
 class LoginSystem;

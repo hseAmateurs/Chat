@@ -17,8 +17,8 @@ set(SOURCES
         loginsystem.cpp
         loginsystem.h
         loginsystem.ui
-        authorisation.cpp
-        authorisation.h
+        Authorisation.cpp
+        Authorisation.h
 )
 
 add_executable(Client
