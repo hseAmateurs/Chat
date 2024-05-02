@@ -13,3 +13,10 @@ LoginSystem::~LoginSystem()
 {
     delete ui;
 }
+
+void LoginSystem::on_pushButton_clicked()
+{
+    this->close(); // close the login window
+    emit OpenMainWindow(); // send a signal from the login window to the main window
+}
+

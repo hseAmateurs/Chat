@@ -17,6 +17,11 @@ public:
 
 private:
     Ui::LoginSystem *ui;
+signals:
+    void OpenMainWindow(); // create a signal, which opens the main window
+
+private slots:
+    void on_pushButton_clicked(); // event, which does pushing the button
 };
 
 #endif // LOGINSYSTEM_H
