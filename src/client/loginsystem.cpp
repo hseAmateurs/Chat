@@ -21,32 +21,40 @@ void LoginSystem::on_pushButton_clicked()
     QString pas = ui->pass->text();
     std::string pass = pas.toUtf8().constData();
     Authorisation data(login, pass);
+    //std::cout<<login<<" "<<pass;
+
+    QMessageBox *message = new QMessageBox();
+    message->setStyleSheet("QMessageBox{background-color: white;}"
+                       "QPushButton{background-color: #E5E5E5; color: black;}");
+    message->setWindowTitle("Ошибка входа");
+    message->setIcon(QMessageBox::Warning);
+
     if (!data.IsEmptyLogin() && !data.IsEmptyPass())
     {
-        if (data.IsCorrectData(login, pass))
+        if (data.IsCorrectPass())
         {
-            this->close(); // close the login window
-            emit OpenMainWindow(); // send a signal from the login window to the main window
+            if (data.IsCorrectData(login, pass))
+            {
+                this->close(); // close the login window
+                emit OpenMainWindow(); // send a signal from the login window to the main window
+            }
+            else
+            {
+                message->setText("Неверный логин или пароль");
+                message->exec();
+            }
         }
         else
         {
-            QMessageBox *message = new QMessageBox();
-            message->setStyleSheet("QMessageBox{background-color: white;}"
-                               "QPushButton{background-color: #E5E5E5; color: black;}");
-            message->setWindowTitle("Ошибка входа");
-            message->setText("Неверный логин или пароль");
-            message->setIcon(QMessageBox::Warning);
+            message->setText("Пароль должен быть не менее\n"
+                             "5 символов, содержать заглавные,\n"
+                             "строчные латинские буквы и цифры");
             message->exec();
         }
     }
     else if (data.IsEmptyLogin() || data.IsEmptyPass())
     {
-        QMessageBox *message = new QMessageBox();
-        message->setStyleSheet("QMessageBox{background-color: white;}"
-                           "QPushButton{background-color: #E5E5E5; color: black;}");
-        message->setWindowTitle("Ошибка входа");
         message->setText("Необходимо заполнить все поля");
-        message->setIcon(QMessageBox::Warning);
         message->exec();
     }
 }
