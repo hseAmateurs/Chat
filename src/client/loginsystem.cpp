@@ -22,6 +22,15 @@ void LoginSystem::on_pushButton_clicked()
     std::string pass = pas.toUtf8().constData();
     Authorisation data(login, pass);
     //std::cout<<login<<" "<<pass;
+    // This message box is used when the person has entered a new login and password
+    QMessageBox *ms = new QMessageBox();
+    ms->setStyleSheet("QMessageBox{background-color: white;}"
+                       "QPushButton{background-color: #E5E5E5; color: black;}");
+    ms->setWindowTitle("Создание аккаунта");
+    ms->setIcon(QMessageBox::Question);
+    ms->setText("Вы уверены, что хотите создать новый аккаунт?");
+    QAbstractButton* no_button = ms->addButton(tr("Нет"), QMessageBox::NoRole);
+    QAbstractButton* yes_button = ms->addButton(tr("Да"), QMessageBox::YesRole);
 
     QMessageBox *message = new QMessageBox();
     message->setStyleSheet("QMessageBox{background-color: white;}"
@@ -35,8 +44,18 @@ void LoginSystem::on_pushButton_clicked()
         {
             if (data.IsCorrectData(login, pass))
             {
+                /*// if an user is new
+                ms->exec();
+                if (ms->clickedButton() == yes_button)
+                {
+                    this->close(); // close the login window
+                    emit OpenMainWindow(); // send a signal from the login window to the main window
+                }
+                */
+                // if the user is not new
                 this->close(); // close the login window
                 emit OpenMainWindow(); // send a signal from the login window to the main window
+
             }
             else
             {
