@@ -9,15 +9,16 @@
 #include <QVector>
 
 const QString USER = "CREATE TABLE User ("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                     "login TEXT UNIQUE NOT NULL,"
-                     "password TEXT NOT NULL"
+                     "id INTEGER PRIMARY KEY,"
+                     "login TEXT UNIQUE,"
+                     "password TEXT"
                      ");";
 
 const QString PERSON = "CREATE TABLE Person ("
                        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                        "userId INTEGER REFERENCES User(id),"
-                       "name TEXT NOT NULL"
+                       "name TEXT NOT NULL,"
+                       "updateTime DATETIME NOT NULL"
                        ");";
 
 const QString FOLDER = "CREATE TABLE Folder ("
