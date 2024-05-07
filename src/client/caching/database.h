@@ -19,15 +19,20 @@
 
 class Database {
 public:
-    explicit Database(const QString &dirPath) : dbPath(dirPath + QDir::separator() + cfg::database::FILENAME) { };
+    explicit Database() { };
 
-    void connect();
+    void connect(const QString &dirPath);
 
     ~Database() { db.close(); }
 
+    bool getAuth(const QString &login, QString& password);
+
+    bool addAuth(const QVector<QString> &data);
+
 private:
     QSqlDatabase db;
-    const QString dbPath;
+    QString dbPath;
+    QSqlQuery query;
 
 private:
     bool restore();
