@@ -44,7 +44,8 @@ void LoginSystem::on_pushButton_clicked()
         {
             if (data.IsCorrectData(login, pass))
             {
-                /*// if an user is new
+                // if an user is new
+                /*
                 ms->exec();
                 if (ms->clickedButton() == yes_button)
                 {
@@ -53,8 +54,10 @@ void LoginSystem::on_pushButton_clicked()
                 }
                 */
                 // if the user is not new
+
                 this->close(); // close the login window
                 emit OpenMainWindow(); // send a signal from the login window to the main window
+
 
             }
             else

@@ -19,6 +19,9 @@ set(SOURCES
         loginsystem.ui
         Authorisation.cpp
         Authorisation.h
+        chatwindow.cpp
+        chatwindow.h
+        chatwindow.ui
 )
 
 add_executable(Client

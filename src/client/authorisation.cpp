@@ -42,6 +42,35 @@ bool Authorisation::IsEmptyPass() const
     }
 }
 
+bool Authorisation::IsCorrectPass() const
+{
+    int count_capital = 0, count_lowercase = 0, count_digit = 0;
+    if (this->pass.length() >= 5)
+    {
+        for (int i = 0; i < this->pass.length(); ++i)
+        {
+            if (this->pass[i] >= 65 && this->pass[i] <= 90)
+            {
+                count_capital += 1;
+            }
+            else if (this->pass[i] >= 97 && this->pass[i] <= 122)
+            {
+                count_lowercase += 1;
+            }
+            else if (this->pass[i] >= 48 && this->pass[i] <= 57)
+            {
+                count_digit += 1;
+            }
+            if (count_capital >= 1 && count_lowercase >= 1 && count_digit >= 1)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    return false;
+}
+
 bool Authorisation::IsCorrectData(std::string name, std::string key) const
 {
     // the server checks login and password, which it gets from GetLogin() and GetPass()
