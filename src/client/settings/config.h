@@ -11,6 +11,12 @@ namespace cfg {
     namespace database {
         const QString FILENAME = "cache.sqlite3";
     }
+    enum auth {
+        OK,
+        BAD_PASS,
+        NOT_FOUND,
+        UNKNOWN
+    };
 }
 
 #endif //CHAT_CONFIG_H
