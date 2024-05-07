@@ -8,17 +8,25 @@
 #include <thread>
 #include <string>
 #include <mutex>
+#include <sstream>
 #define MAXLEN 256
 
 using namespace std;
 
-thread thSend, thRecv;
-bool exitFlag = false;
+int port;
+char IP[16];
+
+//thread thSend, thRecv;
+//bool exitFlag = false;
 SOCKADDR_IN addr;
+SOCKET connection;
+
+bool stableConnection = true;
 
 void sendMessage(int clientSocket);
-void recvMessage(int clientSocket);
-bool checkServer(int clientSocket);
+void handleMessage();
+string dataTime();
+//bool checkServer(int clientSocket);
 
 int main(int argc, char* argv[]) {
 	// ====== WSAStartup  ======
@@ -29,57 +37,75 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
+	string name;
+
+	cout << "Enter IP adress to connect: ";
+	cin >> IP;
+	cout << "Enter port: ";
+	cin >> port;
+	cout << "Enter your name: ";
+	cin >> name;
+
 	int sizeofaddr = sizeof(addr);
-	addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	addr.sin_port = htons(1111);
+	addr.sin_addr.s_addr = inet_addr(IP);
+	addr.sin_port = htons(port);
 	addr.sin_family = AF_INET;
 
-	SOCKET clientSocket = socket(AF_INET, SOCK_STREAM, NULL);
-	if (connect(clientSocket, (SOCKADDR*)&addr, sizeof(addr)) != 0) {
-		std::cout << "Can't connect to the server\n";
-		return 1;
+	connection = socket(AF_INET, SOCK_STREAM, NULL);
+	while (connect(connection, (SOCKADDR*)&addr, sizeof(addr)) != 0) {
+		std::cout << "Can't connect to the server. Enter 'try' to reconnect\n";
+		string enter = "";
+		cin >> enter;
+		if (enter == "try")
+			continue;
 	}
 	
 	std::cout << "== Connected to the server ==\n";
-	/*thread receiveThread(recvMessage, clientSocket);
-	thread sendingThread(sendMessage, clientSocket);*/
-	//while (1)
-	//{
-	//	//sendMessage(clientSocket);
-	//	//cout << "sending mes \n";
-	//}
 
-	////receiveThread.join();
-	////sendingThread.join();
+	send(connection, name.c_str(), sizeof(name), 0);
+	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)handleMessage, 0, 0, 0);
+	string msg;
+	while (1)
+	{
+		getline(cin, msg);
+		if (msg.size() > 0)
+		{
+			msg = name + ": " + msg;
+			send(connection, msg.c_str(), MAXLEN, 0);
+		}
+	}
 
 	return 0;
 }
 
-void sendMessage(int clientSocket)
+void handleMessage()
 {
-	while (1)
+	char  msg[MAXLEN];
+	while (true)
 	{
-		string message;
-		getline(cin, message);
-		send(clientSocket, message.c_str(), sizeof(message), 0);
-		//cout << "sending mes \n";
+		int bytesReceived = recv(connection, msg, sizeof(msg), 0);
+		if (bytesReceived > 0)
+			cout << msg << endl;
+		if (bytesReceived == -1)
+		{
+			string command;
+			cout << "Connection lost\n";
+			return;
+		}
 	}
 }
 
-void recvMessage(int clientSocket)
-{
-	char buffer[256];
-	int bytesReceived = 0;
-	while (1)
-	{
-		//cout << "trying to receive\n";
-		bytesReceived = recv(clientSocket, buffer, sizeof(buffer), 0);
-		if (bytesReceived > 0)
-		{
-			buffer[bytesReceived] = '\0';
-			cout << "Message received: " << buffer << endl;
-		}
-	}
+string dataTime() {
+	auto now = std::chrono::system_clock::now();
+	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+
+	struct tm* parts = std::localtime(&now_c);
+
+	std::stringstream ss;
+	ss << "[" << (parts->tm_year + 1900) << "-" << (parts->tm_mon + 1) << "-" << parts->tm_mday << " ";
+	ss << parts->tm_hour << ":" << parts->tm_min << ":" << parts->tm_sec << "]";
+
+	return ss.str();
 }
 
 /*bool checkServer(int clientSocket)
