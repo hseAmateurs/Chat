@@ -14,17 +14,24 @@ set(SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        database/database.cpp
-        database/database.h
 )
 
 set(SETTINGS
         settings/config.h
-        database/scripts/tables.h)
+)
+
+set(CACHING
+        caching/database.cpp
+        caching/database.h
+        caching/scripts/tables.h
+        caching/cacher.cpp
+        caching/cacher.h
+)
 
 add_executable(Client
         ${SOURCES}
         ${SETTINGS}
+        ${CACHING}
 )
 
 target_link_libraries(Client PRIVATE Qt5::Widgets Qt5::Sql)

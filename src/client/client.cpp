@@ -2,7 +2,7 @@
 
 #include <QApplication>
 
-#include "database/database.h"
+#include "caching/cacher.h"
 
 int main(int argc, char *argv[])
 {
@@ -10,8 +10,11 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    Database db(QCoreApplication::applicationDirPath());
-    db.connect();
+    Cacher::instance().loadConfig(QCoreApplication::applicationDirPath());
+
+    qDebug() << Cacher::instance().isUserValid("admin", "pass1");
+    qDebug() << Cacher::instance().isUserValid("admin", "pass");
+    qDebug() << Cacher::instance().isUserValid("admin1", "pass1");
 
     return a.exec();
 }
