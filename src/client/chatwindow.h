@@ -17,6 +17,11 @@ public:
 
 private:
     Ui::chatwindow *ui;
+signals:
+    void OpenMainWindow(); // create a signal, which opens the main window
+
+private slots:
+    void on_pushButton_2_clicked(); // event, which does pushing the button
 };
 
 #endif // CHATWINDOW_H

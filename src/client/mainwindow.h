@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "loginsystem.h"
+#include "chatwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,7 +19,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    chatwindow *chat;
+
 private slots:
     void Open(); // an openning the main window function
+    void on_pushButton_clicked(); // event which does pushing the button
 };
 #endif // MAINWINDOW_H

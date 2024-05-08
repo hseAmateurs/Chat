@@ -13,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent)
     // 3 - an object, which gets the signal and executes the slot function
     // 4 - the slot function
     LoginWindow->show(); // show the login window from the main window object
+    chat = new chatwindow();
+    chat->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint); // flags for delition buttons in the heading
+    QObject::connect(chat, &chatwindow::OpenMainWindow, this, &MainWindow::Open);
 }
 
 MainWindow::~MainWindow()
@@ -23,5 +26,12 @@ MainWindow::~MainWindow()
 void MainWindow::Open()
 {
     this->show();
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    this->close();
+    chat->show();
 }
 
