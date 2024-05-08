@@ -4,7 +4,7 @@
 #include <QDialog>
 
 namespace Ui {
-class ChatWindow;
+class chatwindow;
 }
 
 class ChatWindow : public QDialog
@@ -16,7 +16,7 @@ public:
     ~ChatWindow();
 
 private:
-    Ui::ChatWindow *ui;
+    Ui::chatwindow *ui;
 signals:
     void openMainWindow(); // create a signal, which opens the main window
 

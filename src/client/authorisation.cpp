@@ -6,19 +6,19 @@ Authorisation::Authorisation(std::string name, std::string key)
     this->pass = key;
 }
 
-std::string Authorisation::GetLogin() const
+std::string Authorisation::getLogin() const
 {
     std::string name = this->login;
     return name;
 }
 
-std::string Authorisation::GetPass() const
+std::string Authorisation::getPass() const
 {
     std::string key = this->pass;
     return pass;
 }
 
-bool Authorisation::IsEmptyLogin() const
+bool Authorisation::isEmptyLogin() const
 {
     if (this->login.empty())
     {
@@ -30,7 +30,7 @@ bool Authorisation::IsEmptyLogin() const
     }
 }
 
-bool Authorisation::IsEmptyPass() const
+bool Authorisation::isEmptyPass() const
 {
     if (this->pass.empty())
     {
@@ -42,26 +42,26 @@ bool Authorisation::IsEmptyPass() const
     }
 }
 
-bool Authorisation::IsCorrectPass() const
+bool Authorisation::isCorrectPass() const
 {
-    int count_capital = 0, count_lowercase = 0, count_digit = 0;
+    int countCapital = 0, countLowercase = 0, countDigit = 0;
     if (this->pass.length() >= 5)
     {
         for (int i = 0; i < this->pass.length(); ++i)
         {
             if (this->pass[i] >= 65 && this->pass[i] <= 90)
             {
-                count_capital += 1;
+                countCapital += 1;
             }
             else if (this->pass[i] >= 97 && this->pass[i] <= 122)
             {
-                count_lowercase += 1;
+                countLowercase += 1;
             }
             else if (this->pass[i] >= 48 && this->pass[i] <= 57)
             {
-                count_digit += 1;
+                countDigit += 1;
             }
-            if (count_capital >= 1 && count_lowercase >= 1 && count_digit >= 1)
+            if (countCapital >= 1 && countLowercase >= 1 && countDigit >= 1)
             {
                 return true;
             }
@@ -71,7 +71,7 @@ bool Authorisation::IsCorrectPass() const
     return false;
 }
 
-bool Authorisation::IsCorrectData(std::string name, std::string key) const
+bool Authorisation::isCorrectData(std::string name, std::string key) const
 {
     // the server checks login and password, which it gets from GetLogin() and GetPass()
     // the server sends an answer about the user's registration

@@ -3,7 +3,7 @@
 
 ChatWindow::ChatWindow(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ChatWindow)
+    ui(new Ui::chatwindow)
 {
     ui->setupUi(this);
 }
