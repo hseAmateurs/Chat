@@ -1,21 +1,21 @@
 #include "chatwindow.h"
 #include "ui_chatwindow.h"
 
-chatwindow::chatwindow(QWidget *parent) :
+ChatWindow::ChatWindow(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::chatwindow)
+    ui(new Ui::ChatWindow)
 {
     ui->setupUi(this);
 }
 
-chatwindow::~chatwindow()
+ChatWindow::~ChatWindow()
 {
     delete ui;
 }
 
-void chatwindow::on_pushButton_2_clicked()
+void ChatWindow::on_pushButton_2_clicked()
 {
     this->close(); // close the chatting window
-    emit OpenMainWindow(); // send a signal from the chatting window to the main window
+    emit openMainWindow(); // send a signal from the chatting window to the main window
 }
 

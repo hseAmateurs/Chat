@@ -29,8 +29,8 @@ void LoginSystem::on_pushButton_clicked()
     ms->setWindowTitle("Создание аккаунта");
     ms->setIcon(QMessageBox::Question);
     ms->setText("Вы уверены, что хотите создать новый аккаунт?");
-    QAbstractButton* no_button = ms->addButton(tr("Нет"), QMessageBox::NoRole);
-    QAbstractButton* yes_button = ms->addButton(tr("Да"), QMessageBox::YesRole);
+    QAbstractButton* noButton = ms->addButton(tr("Нет"), QMessageBox::NoRole);
+    QAbstractButton* yesButton = ms->addButton(tr("Да"), QMessageBox::YesRole);
 
     QMessageBox *message = new QMessageBox();
     message->setStyleSheet("QMessageBox{background-color: white;}"
@@ -38,11 +38,11 @@ void LoginSystem::on_pushButton_clicked()
     message->setWindowTitle("Ошибка входа");
     message->setIcon(QMessageBox::Warning);
 
-    if (!data.IsEmptyLogin() && !data.IsEmptyPass())
+    if (!data.isEmptyLogin() && !data.isEmptyPass())
     {
-        if (data.IsCorrectPass())
+        if (data.isCorrectPass())
         {
-            if (data.IsCorrectData(login, pass))
+            if (data.isCorrectData(login, pass))
             {
                 // if an user is new
                 /*
@@ -56,7 +56,7 @@ void LoginSystem::on_pushButton_clicked()
                 // if the user is not new
 
                 this->close(); // close the login window
-                emit OpenMainWindow(); // send a signal from the login window to the main window
+                emit openMainWindow(); // send a signal from the login window to the main window
 
 
             }
@@ -74,7 +74,7 @@ void LoginSystem::on_pushButton_clicked()
             message->exec();
         }
     }
-    else if (data.IsEmptyLogin() || data.IsEmptyPass())
+    else if (data.isEmptyLogin() || data.isEmptyPass())
     {
         message->setText("Необходимо заполнить все поля");
         message->exec();

@@ -4,21 +4,21 @@
 #include <QDialog>
 
 namespace Ui {
-class chatwindow;
+class ChatWindow;
 }
 
-class chatwindow : public QDialog
+class ChatWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit chatwindow(QWidget *parent = nullptr);
-    ~chatwindow();
+    explicit ChatWindow(QWidget *parent = nullptr);
+    ~ChatWindow();
 
 private:
-    Ui::chatwindow *ui;
+    Ui::ChatWindow *ui;
 signals:
-    void OpenMainWindow(); // create a signal, which opens the main window
+    void openMainWindow(); // create a signal, which opens the main window
 
 private slots:
     void on_pushButton_2_clicked(); // event, which does pushing the button

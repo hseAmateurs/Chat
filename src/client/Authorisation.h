@@ -10,12 +10,12 @@ private:
     std::string pass;
 public:
     Authorisation(std::string name, std::string key);
-    std::string GetLogin() const;
-    std::string GetPass() const;
-    bool IsEmptyLogin() const;
-    bool IsEmptyPass() const;
-    bool IsCorrectPass() const;
-    bool IsCorrectData(std::string name, std::string key) const; // a function for getting an answer from server
+    std::string getLogin() const;
+    std::string getPass() const;
+    bool isEmptyLogin() const;
+    bool isEmptyPass() const;
+    bool isCorrectPass() const;
+    bool isCorrectData(std::string name, std::string key) const; // a function for getting an answer from server
 };
 
 #endif // AUTHORISATION_H

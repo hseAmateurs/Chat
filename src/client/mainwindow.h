@@ -19,10 +19,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    chatwindow *chat;
+    ChatWindow *chat;
 
 private slots:
-    void Open(); // an openning the main window function
+    void open(); // an openning the main window function
     void on_pushButton_clicked(); // event which does pushing the button
 };
 #endif // MAINWINDOW_H
