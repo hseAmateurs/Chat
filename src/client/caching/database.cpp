@@ -48,7 +48,7 @@ bool Database::createTables() {
 bool Database::getAuth(const QString &login, QString &password) {
     qDebug() << "Database:" << "Getting auth data";
 
-    query.prepare("SELECT password FROM User WHERE login=:login");
+    query.prepare("SELECT * FROM User WHERE login=:login");
     query.bindValue(":login", login);
 
     if (!query.exec()) {
@@ -67,7 +67,7 @@ bool Database::addAuth(const QVector<QString> &data) {
 
     query.prepare("INSERT INTO User (id, login, password) VALUES (?, ?, ?)");
     for (int i = 0; i < 3; ++i)
-        query.addBindValue(data.at(i));
+        query.addBindValue(data[i]);
 
     if (!query.exec()) {
         qDebug() << "Database:" << "Can't insert auth data" << db.lastError().text();
@@ -75,9 +75,8 @@ bool Database::addAuth(const QVector<QString> &data) {
     }
 
     query.prepare("INSERT INTO Person (userId, name) VALUES (?, ?)");
-    for (int i = 0; i < 2; ++i) {
-        query.addBindValue(data.at(i));
-    }
+    for (int i = 0; i < 2; ++i)
+        query.addBindValue(data[i]);
 
     if (!query.exec()) {
         qDebug() << "Database:" << "Can't insert person data" << db.lastError().text();
@@ -85,4 +84,23 @@ bool Database::addAuth(const QVector<QString> &data) {
     }
 
     return true;
+}
+
+QString Database::getLastUpdateTime(int userId, const QString &tableName) {
+    qDebug() << "Database:" << "Getting last update time from" << tableName << "for" << userId;
+    QString cmd = QString("SELECT * FROM %1 ").arg(tableName);
+    if (tableName == "Person") {
+        query.prepare(cmd + "ORDER BY updateTime DESC LIMIT 1");
+    }
+    else {
+        query.prepare(cmd + "WHERE userId=:userId ORDER BY updateTime DESC LIMIT 1");
+        query.bindValue(":userId", userId);
+    }
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't get update time" << db.lastError().text();
+        return "";
+    }
+
+    return query.next() ? query.value("updateTime").toString() : "";
 }

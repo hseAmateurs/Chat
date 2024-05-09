@@ -29,6 +29,8 @@ public:
 
     bool addAuth(const QVector<QString> &data);
 
+    QString getLastUpdateTime(int userId, const QString& tableName);
+
 private:
     QSqlDatabase db;
     QString dbPath;

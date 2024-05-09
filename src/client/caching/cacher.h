@@ -24,7 +24,10 @@ public:
 
     cfg::auth isUserValid(const QString &login, const QString &password);
 
+    // data = (id, login, pass)
     bool auth(const QVector<QString> &data) { return db.addAuth(data); }
+
+    void updateData(int userId);
 
 private:
     Database db;
