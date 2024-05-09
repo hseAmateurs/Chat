@@ -43,8 +43,6 @@ public:
 
     bool removeFolderChain(int userId, int folderId);
 
-    bool removeMsgs(int userId, const QVector<int> &chatIds);
-
 private:
     QSqlDatabase db;
     QString dbPath;

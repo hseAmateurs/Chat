@@ -127,24 +127,6 @@ bool Database::removeFolderChain(const int userId, const int folderId) {
     return true;
 }
 
-bool Database::removeMsgs(const int userId, const QVector<int> &chatIds) {
-    qDebug() << "Database:" << "Deleting message for" << userId << "—" << chatIds;
-
-    QString queryStr = "DELETE FROM Message WHERE chatId IN (";
-
-    QStringList idList;
-    for (const auto id : chatIds)
-        idList.append(QString::number(id));
-    queryStr += idList.join(", ");
-    queryStr += ")";
-
-    if (!query.exec(queryStr)) {
-        qDebug() << "Database:" << "Can't delete msg" << db.lastError().text();
-        return false;
-    }
-    return true;
-}
-
 // Поиск всех id папок, корневую, связанных с данной папкой и с юзером
 bool Database::getSubFolderTree(const int userId, const int rootId, QVector<int> &folderTree) {
     QQueue<int> q;
