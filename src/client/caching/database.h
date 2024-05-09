@@ -32,18 +32,22 @@ public:
     QString getLastMsgTime(int userId);
 
     // Перезаписывает таблицу
-    bool forceUpdateTable(int userId, const QString& tableName) { };
+    bool rewriteTable(int userId, const QString& tableName) { };
 
     bool getData(int userId, const QString& tableName) { };
 
     // Вставляет или обновляет данные
     bool updateData(int userId, const QString& tableName) { };
 
-    // Добавляет все связи (включая подпапки)
+    bool addFolder(int userId, int parentId, const QString &name);
+
+    bool deleteFolder(int folderId);
+
+    // Добавляет все связи (включая связи с подпапками)
     bool addFolderChain(int userId, int folderId);
 
-    // Удаляет все связи (включая подпапки)
-    bool removeFolderChain(int userId, int folderId);
+    // Удаляет все связи (включая связи с подпапками)/сообщения/папки, если userId == -1, то userId не учитывается
+    bool multiRemoving(int userId, const QString &tableName, const QVector<int> &ids);
 
     // Получает поддерево для папки rootId, если userId == -1, то таблица FolderUser не учитывается
     bool getSubFolderTree(int userId, int rootId, QVector<int> &folderTree);

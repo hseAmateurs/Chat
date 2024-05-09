@@ -101,6 +101,37 @@ QString Database::getLastMsgTime(const int userId) {
     return query.next() ? query.value("sendTime").toString() : "";
 }
 
+bool Database::addFolder(const int userId, const int parentId, const QString &name) {
+    qDebug() << "Database:" << "Adding folder for" << userId << "—" << name << "—" << parentId;
+
+    query.prepare("INSERT INTO Folder (parentId, name) VALUES (:parentId, :name)");
+    query.bindValue(":parentId", parentId);
+    query.bindValue(":name", name);
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't add folder" << db.lastError().text();
+        return false;
+    }
+
+    if (!query.lastInsertId().isValid()) {
+        qDebug() << "Database:" << "Can't get new folder id" << db.lastError().text();
+        return false;
+    }
+    addFolderChain(userId, query.lastInsertId().toInt());
+
+    return true;
+}
+
+// Удаляет папку для всех (связи между пользователями и папками, сами папки + сообщения в них)
+bool Database::deleteFolder(int folderId) {
+    QVector<int> folderIds;
+    getSubFolderTree(-1, folderId, folderIds);
+    return multiRemoving(-1, "FolderUser", folderIds)
+           && multiRemoving(-1, "Message", folderIds)
+           && multiRemoving(-1, "Folder", folderIds);
+}
+
+// При добавлении связи с папкой с подпапками тоже устанавливается связь
 bool Database::addFolderChain(int userId, int folderId) {
     qDebug() << "Database:" << "Adding folder chain between" << userId << "—" << folderId;
 
@@ -111,7 +142,7 @@ bool Database::addFolderChain(int userId, int folderId) {
     QStringList valueList;
 
     // Формирование списка значений для добавления
-    for (const auto id : folderIds) {
+    for (const auto id: folderIds) {
         valueList.append(QString("('%1', %2)").arg(userId).arg(id));
     }
     queryStr += valueList.join(", ");
@@ -124,26 +155,24 @@ bool Database::addFolderChain(int userId, int folderId) {
     return true;
 }
 
-// При добавлении связи с папкой с подпапками тоже устанавливается связь
-bool Database::removeFolderChain(const int userId, const int folderId) {
-    qDebug() << "Database:" << "Deleting folder chain between" << userId << "—" << folderId;
+// Удаляет объекты из таблицы по ids
+bool Database::multiRemoving(int userId, const QString &tableName, const QVector<int> &ids) {
+    qDebug() << "Database:" << "Deleting folder chain between" << userId << "—"
+             << "\nIds:" << ids;
 
-    QVector<int> folderIds;
-    getSubFolderTree(userId, folderId, folderIds);
-
-    QString queryStr = "DELETE FROM FolderUser WHERE userId=:userId AND folderId IN (";
+    QString queryStr = "DELETE FROM " + tableName + " WHERE id IN (";
     QStringList idList;
-    for (const auto id: folderIds)
+    for (const auto id: ids)
         idList.append(QString::number(id));
 
     queryStr += idList.join(", ");
     queryStr += ")";
 
-    query.prepare(queryStr);
-    query.bindValue(":userId", userId);
+    if (userId != -1)
+        queryStr += QString("AND userId='%1'").arg(userId);
 
-    if (!query.exec()) {
-        qDebug() << "Database:" << "Can't delete chains" << db.lastError().text();
+    if (!query.exec(queryStr)) {
+        qDebug() << "Database:" << "Can't delete objs" << db.lastError().text();
         return false;
     }
 
