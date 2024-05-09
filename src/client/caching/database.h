@@ -25,19 +25,26 @@ public:
 
     ~Database() { db.close(); }
 
-    bool getAuth(const QString &login, QString& password);
+    bool getAuth(const QString &login, QString &password);
 
     bool addAuth(const QVector<QString> &data);
 
     QString getLastMsgTime(int userId);
 
     // Перезаписывает таблицу
-    bool rewriteTable(int userId, const QString& tableName) { };
+    // TODO
+    bool rewriteTable(int userId, const QString &tableName) {  };
 
-    bool getData(int userId, const QString& tableName) { };
+    bool addMsg(int userId, int folderId, const QString &text);
 
-    // Вставляет или обновляет данные
-    bool updateData(int userId, const QString& tableName) { };
+    // Возвращает все сообщения из текущей папки (включая подпапки)
+    // TODO (структуру для сообщений)
+    bool getMsgs(int folderId, QVector<QVector<QString>> &msgs);
+
+    // Возвращает подпапки, вложенные в данную папку
+    bool getFolders(int userId, int rootId, QVector<QPair<int, QString>> &subFolders);
+
+    bool updateData(int id, const QString &key, const QString &value, const QString &tableName);
 
     bool addFolder(int userId, int parentId, const QString &name);
 

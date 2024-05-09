@@ -211,3 +211,89 @@ bool Database::getSubFolderTree(const int userId, const int rootId, QVector<int>
     }
     return true;
 }
+
+bool Database::updateData(int id, const QString &key, const QString &value, const QString &tableName) {
+    qDebug() << "Database:" << "Renaming for" << id << "—" << key << "—" << value
+             << "—" << tableName;
+
+    const QString queryStr = QString("UPDATE %1 SET %2 = :value WHERE id = :id").arg(tableName, key);
+    query.prepare(queryStr);
+    query.bindValue(":value", value);
+    query.bindValue(":id", id);
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't update data" << db.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+bool Database::addMsg(int userId, int folderId, const QString &text) {
+    qDebug() << "Database:" << "Adding message from" << userId << "to" << folderId;
+
+    query.prepare("INSERT INTO Message (userId, folderId, text, status) VALUES (:userId, :folderId, :text, 0)");
+    query.bindValue(":userId", userId);
+    query.bindValue(":folderId", folderId);
+    query.bindValue(":text", text);
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't add msg" << db.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+bool Database::getMsgs(const int folderId, QVector<QVector<QString>> &msgs) {
+    qDebug() << "Database:" << "Getting messages from folder" << folderId;
+
+    QVector<int> folderIds;
+    getSubFolderTree(-1, folderId, folderIds);
+
+    QString queryStr = "SELECT * FROM Message WHERE chatId IN (";
+
+    QStringList idList;
+    for (int chatId: folderIds) {
+        idList.append(QString::number(chatId));
+    }
+    queryStr += idList.join(", ");
+    queryStr += ")";
+
+    if (!query.exec(queryStr)) {
+        qDebug() << "Database:" << "Can't get messages" << db.lastError().text();
+        return false;
+    }
+
+    while (query.next()) {
+        // Handling
+        // qDebug() << query.value();
+    }
+
+    return true;
+}
+
+bool Database::getFolders(const int userId, const int rootId, QVector<QPair<int, QString>> &subFolders) {
+    qDebug() << "Database:" << "Getting sub folders from" << rootId;
+
+    query.prepare("SELECT f.id, f.name "
+                  "FROM Folder f "
+                  "JOIN FolderUser fu ON f.id = fu.folderId "
+                  "WHERE f.parentId = :parentId AND fu.userId = :userId");
+
+    query.bindValue(":userId", userId);
+    query.bindValue(":parentId", rootId);
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't get sub folders" << db.lastError().text();
+        return false;
+    }
+
+    while (!query.next()) {
+        int id = query.value("id").toInt();
+        QString name = query.value("name").toString();
+        subFolders.append({id, name});
+    }
+
+    return true;
+}
