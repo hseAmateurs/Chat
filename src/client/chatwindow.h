@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include <QVBoxLayout>
+#include <QScrollArea>
+#include <QScrollBar>
 
 namespace Ui {
 class chatwindow;
@@ -19,6 +21,8 @@ public:
 private:
     Ui::chatwindow *ui;
     QVBoxLayout *lay;
+    QScrollArea *scroll;
+
 signals:
     void openMainWindow(); // create a signal, which opens the main window
 

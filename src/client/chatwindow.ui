@@ -180,10 +180,16 @@ background-color: rgb(125, 212, 240);</string>
    <property name="geometry">
     <rect>
      <x>9</x>
-     <y>69</y>
+     <y>79</y>
      <width>481</width>
-     <height>421</height>
+     <height>1000</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>1000</height>
+    </size>
    </property>
    <property name="layoutDirection">
     <enum>Qt::RightToLeft</enum>
