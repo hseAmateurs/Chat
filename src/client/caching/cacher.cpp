@@ -17,11 +17,10 @@ cfg::auth Cacher::isUserValid(const QString &login, const QString &password) {
     return (dbPass == password) ? cfg::OK : cfg::BAD_PASS;
 }
 
-void Cacher::updateData(const int userId) {
-    const QVector<QString> tables{"Person", "FolderUser", "Message"};
-    QVector<QString> updateTimes;
-    for (const auto &table: tables)
-        updateTimes.append(db.getLastUpdateTime(userId, table));
+void Cacher::actualizeData(const int userId) {
+    QString lastMsgTime = db.getLastMsgTime(userId);
 
-    qDebug() << updateTimes;
+    // Отправка серверу запроса на получение всей актуальной информации
+
+    qDebug() << lastMsgTime;
 }

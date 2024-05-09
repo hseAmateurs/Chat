@@ -27,7 +27,7 @@ public:
     // data = (id, login, pass)
     bool auth(const QVector<QString> &data) { return db.addAuth(data); }
 
-    void updateData(int userId);
+    void actualizeData(int userId);
 
 private:
     Database db;
