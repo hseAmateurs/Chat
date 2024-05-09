@@ -28,7 +28,7 @@ const QString FOLDER = "CREATE TABLE Folder ("
 
 const QString FOLDER_USER = "CREATE TABLE FolderUser ("
                             "userId INTEGER REFERENCES User(id),"
-                            "folderId INTEGER REFERENCES Folder(id)"
+                            "id INTEGER REFERENCES Folder(id)"
                             ");";
 
 const QString MESSAGE = "CREATE TABLE Message ("
