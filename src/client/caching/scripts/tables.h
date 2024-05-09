@@ -17,16 +17,15 @@ const QString USER = "CREATE TABLE User ("
 const QString PERSON = "CREATE TABLE Person ("
                        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                        "userId INTEGER REFERENCES User(id),"
-                       "name TEXT NOT NULL"
+                       "name TEXT NOT NULL,"
+                       "updateTime DATETIME DEFAULT CURRENT_TIMESTAMP"
                        ");";
 
 const QString FOLDER = "CREATE TABLE Folder ("
                        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                        "parentId INTEGER REFERENCES Folder(id),"
                        "name TEXT NOT NULL,"
-                       "size INTEGER,"
-                       "status INTEGER,"
-                       "updateTime DATETIME DEFAULT CURRENT_TIMESTAMP"
+                       "size INTEGER"
                        ");";
 
 const QString FOLDER_USER = "CREATE TABLE FolderUser ("
@@ -38,6 +37,7 @@ const QString FOLDER_USER = "CREATE TABLE FolderUser ("
 
 const QString MESSAGE = "CREATE TABLE Message ("
                         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        "userId INTEGER REFERENCES User(id),"
                         "chatId INTEGER REFERENCES Folder(id),"
                         "status INTEGER,"
                         "text TEXT NOT NULL,"
