@@ -10,6 +10,12 @@
     <height>600</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>500</width>
+    <height>600</height>
+   </size>
+  </property>
   <property name="font">
    <font>
     <family>Yu Gothic UI Semilight</family>
@@ -27,7 +33,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>801</width>
+     <width>500</width>
      <height>61</height>
     </rect>
    </property>
@@ -148,7 +154,7 @@ background-color: rgb(125, 212, 240);</string>
     </size>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit">
+  <widget class="QTextEdit" name="message">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -159,6 +165,7 @@ background-color: rgb(125, 212, 240);</string>
    </property>
    <property name="font">
     <font>
+     <family>MS Shell Dlg 2</family>
      <pointsize>10</pointsize>
     </font>
    </property>
@@ -167,6 +174,25 @@ background-color: rgb(125, 212, 240);</string>
    </property>
    <property name="placeholderText">
     <string>Напишите сообщение...</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>69</y>
+     <width>481</width>
+     <height>421</height>
+    </rect>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::RightToLeft</enum>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
    </property>
   </widget>
  </widget>
