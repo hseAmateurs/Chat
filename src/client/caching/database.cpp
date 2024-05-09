@@ -101,6 +101,29 @@ QString Database::getLastMsgTime(const int userId) {
     return query.next() ? query.value("sendTime").toString() : "";
 }
 
+bool Database::addFolderChain(int userId, int folderId) {
+    qDebug() << "Database:" << "Adding folder chain between" << userId << "—" << folderId;
+
+    QVector<int> folderIds;
+    getSubFolderTree(-1, folderId, folderIds);
+
+    QString queryStr = "INSERT INTO FolderUser (userId, folderId) VALUES ";
+    QStringList valueList;
+
+    // Формирование списка значений для добавления
+    for (const auto id : folderIds) {
+        valueList.append(QString("('%1', %2)").arg(userId).arg(id));
+    }
+    queryStr += valueList.join(", ");
+
+    if (!query.exec(queryStr)) {
+        qDebug() << "Database:" << "Can't add folder chains" << db.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
 // При добавлении связи с папкой с подпапками тоже устанавливается связь
 bool Database::removeFolderChain(const int userId, const int folderId) {
     qDebug() << "Database:" << "Deleting folder chain between" << userId << "—" << folderId;
@@ -110,7 +133,7 @@ bool Database::removeFolderChain(const int userId, const int folderId) {
 
     QString queryStr = "DELETE FROM FolderUser WHERE userId=:userId AND folderId IN (";
     QStringList idList;
-    for (const auto id : folderIds)
+    for (const auto id: folderIds)
         idList.append(QString::number(id));
 
     queryStr += idList.join(", ");
@@ -136,12 +159,16 @@ bool Database::getSubFolderTree(const int userId, const int rootId, QVector<int>
         qDebug() << "Database:" << "Getting subTree for" << userId << "—" << q.head();
         folderTree.append(q.head());
 
-        query.prepare("SELECT f.id "
-                      "FROM Folder f "
-                      "JOIN FolderUser fu ON f.id = fu.folderId "
-                      "WHERE f.parentId = :parentId AND fu.userId = :userId");
+        if (userId != -1) {
+            query.prepare("SELECT f.id "
+                          "FROM Folder f "
+                          "JOIN FolderUser fu ON f.id = fu.folderId "
+                          "WHERE f.parentId = :parentId AND fu.userId = :userId");
 
-        query.bindValue(":userId", userId);
+            query.bindValue(":userId", userId);
+        }
+        else query.prepare("SELECT id FROM Folder WHERE parentId = :parentId");
+
         query.bindValue(":parentId", q.dequeue());
 
         if (!query.exec()) {
@@ -149,7 +176,7 @@ bool Database::getSubFolderTree(const int userId, const int rootId, QVector<int>
             return false;
         }
 
-        while(!query.next())
+        while (!query.next())
             q.append(query.value("id").toInt());
 
     }

@@ -39,9 +39,15 @@ public:
     // Вставляет или обновляет данные
     bool updateData(int userId, const QString& tableName) { };
 
+    // Добавляет все связи (включая подпапки)
+    bool addFolderChain(int userId, int folderId);
+
+    // Удаляет все связи (включая подпапки)
+    bool removeFolderChain(int userId, int folderId);
+
+    // Получает поддерево для папки rootId, если userId == -1, то таблица FolderUser не учитывается
     bool getSubFolderTree(int userId, int rootId, QVector<int> &folderTree);
 
-    bool removeFolderChain(int userId, int folderId);
 
 private:
     QSqlDatabase db;
