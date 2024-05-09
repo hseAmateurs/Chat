@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     qDebug() << Cacher::instance().isUserValid("admin", "pass");
     qDebug() << Cacher::instance().isUserValid("admin1", "pass1");
 
-    Cacher::instance().updateData(78);
+//    Cacher::instance().updateData(78);
 
     return a.exec();
 }

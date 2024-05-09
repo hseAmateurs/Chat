@@ -2,6 +2,8 @@
 // Created by Shon on 06.05.2024.
 //
 
+#include <QQueue>
+
 #include "database.h"
 
 #include "scripts/tables.h"
@@ -86,21 +88,88 @@ bool Database::addAuth(const QVector<QString> &data) {
     return true;
 }
 
-QString Database::getLastUpdateTime(int userId, const QString &tableName) {
-    qDebug() << "Database:" << "Getting last update time from" << tableName << "for" << userId;
-    QString cmd = QString("SELECT * FROM %1 ").arg(tableName);
-    if (tableName == "Person") {
-        query.prepare(cmd + "ORDER BY updateTime DESC LIMIT 1");
-    }
-    else {
-        query.prepare(cmd + "WHERE userId=:userId ORDER BY updateTime DESC LIMIT 1");
-        query.bindValue(":userId", userId);
-    }
+QString Database::getLastMsgTime(const int userId) {
+    qDebug() << "Database:" << "Getting last sendTime from Message for" << userId;
+    query.prepare("SELECT * FROM Message WHERE userId=:userId ORDER BY updateTime DESC LIMIT 1");
+    query.bindValue(":userId", userId);
 
     if (!query.exec()) {
-        qDebug() << "Database:" << "Can't get update time" << db.lastError().text();
+        qDebug() << "Database:" << "Can't get sendTime" << db.lastError().text();
         return "";
     }
 
-    return query.next() ? query.value("updateTime").toString() : "";
+    return query.next() ? query.value("sendTime").toString() : "";
+}
+
+// При добавлении связи с папкой с подпапками тоже устанавливается связь
+bool Database::removeFolderChain(const int userId, const int folderId) {
+    qDebug() << "Database:" << "Deleting folder chain between" << userId << "—" << folderId;
+
+    QVector<int> folderIds;
+    getSubFolderTree(userId, folderId, folderIds);
+
+    QString queryStr = "DELETE FROM FolderUser WHERE userId=:userId AND folderId IN (";
+    QStringList idList;
+    for (const auto id : folderIds)
+        idList.append(QString::number(id));
+
+    queryStr += idList.join(", ");
+    queryStr += ")";
+
+    query.prepare(queryStr);
+    query.bindValue(":userId", userId);
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't delete chains" << db.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+bool Database::removeMsgs(const int userId, const QVector<int> &chatIds) {
+    qDebug() << "Database:" << "Deleting message for" << userId << "—" << chatIds;
+
+    QString queryStr = "DELETE FROM Message WHERE chatId IN (";
+
+    QStringList idList;
+    for (const auto id : chatIds)
+        idList.append(QString::number(id));
+    queryStr += idList.join(", ");
+    queryStr += ")";
+
+    if (!query.exec(queryStr)) {
+        qDebug() << "Database:" << "Can't delete msg" << db.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+// Поиск всех id папок, корневую, связанных с данной папкой и с юзером
+bool Database::getSubFolderTree(const int userId, const int rootId, QVector<int> &folderTree) {
+    QQueue<int> q;
+    q.enqueue(rootId);
+
+    while (!q.isEmpty()) {
+        qDebug() << "Database:" << "Getting subTree for" << userId << "—" << q.head();
+        folderTree.append(q.head());
+
+        query.prepare("SELECT f.id "
+                      "FROM Folder f "
+                      "JOIN FolderUser fu ON f.id = fu.folderId "
+                      "WHERE f.parentId = :parentId AND fu.userId = :userId");
+
+        query.bindValue(":userId", userId);
+        query.bindValue(":parentId", q.dequeue());
+
+        if (!query.exec()) {
+            qDebug() << "Database:" << "Can't get subTree" << db.lastError().text();
+            return false;
+        }
+
+        while(!query.next())
+            q.append(query.value("id").toInt());
+
+    }
+    return true;
 }

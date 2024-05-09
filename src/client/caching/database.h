@@ -29,7 +29,21 @@ public:
 
     bool addAuth(const QVector<QString> &data);
 
-    QString getLastUpdateTime(int userId, const QString& tableName);
+    QString getLastMsgTime(int userId);
+
+    // Перезаписывает таблицу
+    bool forceUpdateTable(int userId, const QString& tableName) { };
+
+    bool getData(int userId, const QString& tableName) { };
+
+    // Вставляет или обновляет данные
+    bool updateData(int userId, const QString& tableName) { };
+
+    bool getSubFolderTree(int userId, int rootId, QVector<int> &folderTree);
+
+    bool removeFolderChain(int userId, int folderId);
+
+    bool removeMsgs(int userId, const QVector<int> &chatIds);
 
 private:
     QSqlDatabase db;
