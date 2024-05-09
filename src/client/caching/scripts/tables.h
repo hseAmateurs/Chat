@@ -17,28 +17,31 @@ const QString USER = "CREATE TABLE User ("
 const QString PERSON = "CREATE TABLE Person ("
                        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                        "userId INTEGER REFERENCES User(id),"
-                       "name TEXT NOT NULL,"
-                       "updateTime DATETIME NOT NULL"
+                       "name TEXT NOT NULL"
                        ");";
 
 const QString FOLDER = "CREATE TABLE Folder ("
                        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                        "parentId INTEGER REFERENCES Folder(id),"
                        "name TEXT NOT NULL,"
-                       "size INTEGER"
+                       "size INTEGER,"
+                       "status INTEGER,"
+                       "updateTime DATETIME DEFAULT CURRENT_TIMESTAMP"
                        ");";
 
 const QString FOLDER_USER = "CREATE TABLE FolderUser ("
                             "userId INTEGER REFERENCES User(id),"
-                            "folderId INTEGER REFERENCES Folder(id)"
+                            "folderId INTEGER REFERENCES Folder(id),"
+                            "status INTEGER,"
+                            "updateTime DATETIME DEFAULT CURRENT_TIMESTAMP"
                             ");";
 
 const QString MESSAGE = "CREATE TABLE Message ("
                         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                         "chatId INTEGER REFERENCES Folder(id),"
-                        "statusId INTEGER"
+                        "status INTEGER,"
                         "text TEXT NOT NULL,"
-                        "sendTime DATETIME DEFAULT CURRENT_TIMESTAMP"
+                        "updateTime DATETIME DEFAULT CURRENT_TIMESTAMP"
                         ");";
 
 const QVector<QString> TABLES_INIT = {USER, PERSON, FOLDER, FOLDER_USER, MESSAGE};

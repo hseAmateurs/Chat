@@ -61,7 +61,7 @@ bool Database::getAuth(const QString &login, QString &password) {
     return true;
 }
 
-// data = (id, login, pass, updateTime)
+// data = (id, login, pass)
 bool Database::addAuth(const QVector<QString> &data) {
     qDebug() << "Database:" << "Adding auth data";
 
@@ -74,9 +74,8 @@ bool Database::addAuth(const QVector<QString> &data) {
         return false;
     }
 
-    query.prepare("INSERT INTO Person (userId, name, updateTime) VALUES (?, ?, ?)");
-    for (int i = 0; i < 3; ++i) {
-        if (i == 2) i++;
+    query.prepare("INSERT INTO Person (userId, name) VALUES (?, ?)");
+    for (int i = 0; i < 2; ++i) {
         query.addBindValue(data.at(i));
     }
 
