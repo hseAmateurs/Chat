@@ -14,7 +14,11 @@ ChatWindow::ChatWindow(QWidget *parent) :
     lay->setAlignment(Qt::AlignTop);
     ui->frame->setLayout(lay);
     scroll = new QScrollArea(this);
-    scroll->setStyleSheet("QScrollArea {border: none}");
+    scroll->setStyleSheet("QScrollArea {border: none}"
+                          "QScrollBar:vertical {"
+                          "background-color: #d0f3e6;"
+                          "width: 14px;"
+                          "}");
     scroll->setWidget(ui->frame);
     scroll->setGeometry(9, 79, 481, 401);
     scroll->setWidgetResizable(true);
