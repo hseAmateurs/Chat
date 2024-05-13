@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QScrollArea>
 #include <QScrollBar>
 
@@ -21,6 +22,8 @@ public:
 private:
     Ui::chatwindow *ui;
     QVBoxLayout *lay;
+    QHBoxLayout *hlay1;
+    QHBoxLayout *hlay2;
     QScrollArea *scroll;
 
 signals:
