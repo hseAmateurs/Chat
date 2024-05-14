@@ -21,9 +21,12 @@ private:
     Ui::MainWindow *ui;
     ChatWindow *chat;
 
+public slots:
+
+    void open() { show(); };
+
 private slots:
 
-    void open();
     void on_pushButton_clicked();
 };
 
