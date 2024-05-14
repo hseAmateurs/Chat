@@ -1,5 +1,5 @@
 #include "chatWindow.h"
-#include "ui_chatwindow.h"
+#include "ui/ui_chatwindow.h"
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>

@@ -1,4 +1,4 @@
-#include "mainWindow.h"
+#include "core/mainWindow.h"
 
 #include <QApplication>
 
@@ -7,7 +7,6 @@
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     MainWindow w;
-    w.show();
 
     Cacher::instance().loadConfig(QCoreApplication::applicationDirPath());
 

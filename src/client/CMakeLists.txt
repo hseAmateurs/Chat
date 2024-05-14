@@ -11,17 +11,15 @@ find_package(Qt5 COMPONENTS Widgets Sql REQUIRED)
 
 set(SOURCES
         client.cpp
-        mainWindow.cpp
-        mainWindow.h
-        mainwindow.ui
-        loginSystem.cpp
-        loginSystem.h
-        loginsystem.ui
-        authorisation.cpp
-        authorisation.h
-        chatWindow.cpp
-        chatWindow.h
-        chatwindow.ui
+        core/mainWindow.cpp
+        core/mainWindow.h
+        core/loginSystem.cpp
+        core/loginSystem.h
+        core/authorisation.cpp
+        core/authorisation.h
+        core/chatWindow.cpp
+        core/chatWindow.h
+
 )
 
 set(SETTINGS
@@ -36,10 +34,17 @@ set(CACHING
         caching/cacher.h
 )
 
+set(UI_FILES
+        core/mainwindow.ui
+        core/loginsystem.ui
+        core/chatwindow.ui
+)
+
 add_executable(Client
         ${SOURCES}
         ${SETTINGS}
         ${CACHING}
+        ${UI_FILES}
 )
 
 target_link_libraries(Client PRIVATE Qt5::Widgets Qt5::Sql)
