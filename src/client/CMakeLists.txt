@@ -11,9 +11,17 @@ find_package(Qt5 COMPONENTS Widgets Sql REQUIRED)
 
 set(SOURCES
         client.cpp
-        mainwindow.cpp
-        mainwindow.h
+        mainWindow.cpp
+        mainWindow.h
         mainwindow.ui
+        loginSystem.cpp
+        loginSystem.h
+        loginsystem.ui
+        authorisation.cpp
+        authorisation.h
+        chatWindow.cpp
+        chatWindow.h
+        chatwindow.ui
 )
 
 set(SETTINGS

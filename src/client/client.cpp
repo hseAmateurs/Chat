@@ -1,11 +1,10 @@
-#include "mainwindow.h"
+#include "mainWindow.h"
 
 #include <QApplication>
 
 #include "caching/cacher.h"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
