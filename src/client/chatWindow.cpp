@@ -1,4 +1,4 @@
-#include "chatwindow.h"
+#include "chatWindow.h"
 #include "ui_chatwindow.h"
 #include <QLabel>
 #include <QVBoxLayout>
@@ -7,9 +7,8 @@
 #include <QScrollBar>
 
 ChatWindow::ChatWindow(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::chatwindow)
-{
+        QDialog(parent),
+        ui(new Ui::ChatWindow) {
     ui->setupUi(this);
     lay = new QVBoxLayout();
     lay->setAlignment(Qt::AlignTop);
@@ -25,23 +24,19 @@ ChatWindow::ChatWindow(QWidget *parent) :
     scroll->setWidgetResizable(true);
 }
 
-ChatWindow::~ChatWindow()
-{
+ChatWindow::~ChatWindow() {
     delete ui;
 }
 
-void ChatWindow::on_pushButton_2_clicked()
-{
+void ChatWindow::on_pushButton_2_clicked() {
     this->close(); // close the chatting window
     emit openMainWindow(); // send a signal from the chatting window to the main window
 }
 
 
-void ChatWindow::on_pushButton_clicked()
-{
+void ChatWindow::on_pushButton_clicked() {
     QString message = ui->message->toPlainText();
-    if (!message.isEmpty())
-    {
+    if (!message.isEmpty()) {
         QLabel *label = new QLabel(message);
         label->setContentsMargins(5, 5, 5, 5);
         QFont font = label->font();
@@ -90,4 +85,3 @@ void ChatWindow::on_pushButton_clicked()
         lay->addSpacing(12);
     }
 }
-
