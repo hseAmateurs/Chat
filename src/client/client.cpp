@@ -6,15 +6,14 @@
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    MainWindow w;
 
     Cacher::instance().loadConfig(QCoreApplication::applicationDirPath());
 
-    qDebug() << Cacher::instance().isUserValid("admin", "pass1");
-    qDebug() << Cacher::instance().isUserValid("admin", "pass");
-    qDebug() << Cacher::instance().isUserValid("admin1", "pass1");
+    MainWindow w;
 
-//    Cacher::instance().updateData(78);
+    auto *loginWindow = new LoginSystem();
+    QObject::connect(loginWindow, &LoginSystem::openMainWindow, &w, &MainWindow::open);
+    loginWindow->show();
 
     return a.exec();
 }

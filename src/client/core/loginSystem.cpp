@@ -1,11 +1,15 @@
 #include "loginSystem.h"
 #include "ui_loginsystem.h"
+
 #include <QMessageBox>
+
+#include "../caching/cacher.h"
 
 LoginSystem::LoginSystem(QWidget *parent) :
         QDialog(parent),
         ui(new Ui::LoginSystem) {
     ui->setupUi(this);
+    QObject::connect(this, &LoginSystem::openMainWindow, this, &LoginSystem::close);
 }
 
 LoginSystem::~LoginSystem() {
@@ -13,61 +17,84 @@ LoginSystem::~LoginSystem() {
 }
 
 void LoginSystem::on_pushButton_clicked() {
-    QString log = ui->login->text();
-    std::string login = log.toUtf8().constData();
-    QString pas = ui->pass->text();
-    std::string pass = pas.toUtf8().constData();
-    Authorisation data(login, pass);
-    //std::cout<<login<<" "<<pass;
-    // This message box is used when the person has entered a new login and password
-    QMessageBox *ms = new QMessageBox();
+    login = ui->login->text();
+    pass = ui->pass->text();
+    auth();
+}
+
+bool LoginSystem::isCorrectPass() const {
+    int countCapital = 0, countLowercase = 0, countDigit = 0;
+    if (pass.length() >= 5) {
+        for (int i = 0; i < pass.length(); ++i) {
+            if (pass[i] >= 65 && pass[i] <= 90)
+                countCapital += 1;
+
+            else if (pass[i] >= 97 && pass[i] <= 122)
+                countLowercase += 1;
+
+            else if (pass[i] >= 48 && pass[i] <= 57)
+                countDigit += 1;
+
+            if (countCapital >= 1 && countLowercase >= 1 && countDigit >= 1)
+                return true;
+
+        }
+        return false;
+    }
+    return false;
+}
+
+bool LoginSystem::isValidData() const {
+    return true;
+}
+
+void LoginSystem::auth() {
+    auto *ms = new QMessageBox();
     ms->setStyleSheet("QMessageBox{background-color: white;}"
                       "QPushButton{background-color: #E5E5E5; color: black;}");
+
     ms->setWindowTitle("Создание аккаунта");
     ms->setIcon(QMessageBox::Question);
     ms->setText("Вы уверены, что хотите создать новый аккаунт?");
+
     QAbstractButton *noButton = ms->addButton(tr("Нет"), QMessageBox::NoRole);
     QAbstractButton *yesButton = ms->addButton(tr("Да"), QMessageBox::YesRole);
 
-    QMessageBox *message = new QMessageBox();
+    auto *message = new QMessageBox();
     message->setStyleSheet("QMessageBox{background-color: white;}"
                            "QPushButton{background-color: #E5E5E5; color: black;}");
     message->setWindowTitle("Ошибка входа");
     message->setIcon(QMessageBox::Warning);
 
-    if (!data.isEmptyLogin() && !data.isEmptyPass()) {
-        if (data.isCorrectPass()) {
-            if (data.isCorrectData(login, pass)) {
-                // if an user is new
-                /*
-                ms->exec();
-                if (ms->clickedButton() == yes_button)
-                {
-                    this->close(); // close the login window
-                    emit OpenMainWindow(); // send a signal from the login window to the main window
-                }
-                */
-                // if the user is not new
-
-                this->close(); // close the login window
-                emit openMainWindow(); // send a signal from the login window to the main window
-
-
-            }
-            else {
-                message->setText("Неверный логин или пароль");
-                message->exec();
-            }
-        }
-        else {
-            message->setText("Пароль должен быть не менее\n"
-                             "5 символов, содержать заглавные,\n"
-                             "строчные латинские буквы и цифры");
-            message->exec();
-        }
-    }
-    else if (data.isEmptyLogin() || data.isEmptyPass()) {
+    if (login.isEmpty() || pass.isEmpty()) {
         message->setText("Необходимо заполнить все поля");
         message->exec();
+        return;
+    }
+
+    if (!isCorrectPass()) {
+        message->setText("Пароль должен быть не менее\n"
+                         "5 символов, содержать заглавные,\n"
+                         "строчные латинские буквы и цифры");
+        message->exec();
+        return;
+    }
+
+    switch (Cacher::instance().isUserValid(login, pass)) {
+        case cfg::OK:
+            emit openMainWindow();
+            break;
+        case cfg::BAD_PASS:
+            message->setText("Неверный пароль");
+            message->exec();
+            break;
+        case cfg::NOT_FOUND:
+            message->setText("Неверный логин");
+            message->exec();
+            break;
+        case cfg::UNKNOWN:
+            message->setText("Неизвестная ошибка");
+            message->exec();
+            break;
     }
 }

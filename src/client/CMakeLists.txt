@@ -15,8 +15,6 @@ set(SOURCES
         core/mainWindow.h
         core/loginSystem.cpp
         core/loginSystem.h
-        core/authorisation.cpp
-        core/authorisation.h
         core/chatWindow.cpp
         core/chatWindow.h
 

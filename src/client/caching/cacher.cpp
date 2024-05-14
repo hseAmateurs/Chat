@@ -7,7 +7,7 @@
 
 void Cacher::loadConfig(const QString &exePath) {
     db.connect(exePath);
-//    /db.addAuth({"1005", "aqwer", "pass_1"});
+//    db.addAuth({"1005", "aqwer", "pass_1"});
 }
 
 cfg::auth Cacher::isUserValid(const QString &login, const QString &password) {

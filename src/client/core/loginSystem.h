@@ -2,7 +2,6 @@
 #define LOGINSYSTEM_H
 
 #include <QDialog>
-#include "authorisation.h"
 
 namespace Ui {
     class LoginSystem;
@@ -18,13 +17,23 @@ public:
 
 private:
     Ui::LoginSystem *ui;
+    QString login;
+    QString pass;
+
+private:
+    void auth();
+
+    bool isCorrectPass() const;
+
+    bool isValidData() const;
+
 signals:
 
-    void openMainWindow(); // create a signal, which opens the main window
+    void openMainWindow();
 
 private slots:
 
-    void on_pushButton_clicked(); // event, which does pushing the button
+    void on_pushButton_clicked();
 };
 
 #endif // LOGINSYSTEM_H
