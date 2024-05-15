@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStackedWidget>
 #include "loginSystem.h"
 #include "chatWindow.h"
 
@@ -19,7 +20,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    ChatWindow *chat;
+    QStackedWidget *stackedWidget;
+
+
 
 public slots:
 
@@ -27,7 +30,6 @@ public slots:
 
 private slots:
 
-    void on_pushButton_clicked();
 };
 
 #endif // MAINWINDOW_H
