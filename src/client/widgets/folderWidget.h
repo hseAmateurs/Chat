@@ -10,10 +10,15 @@
 class FolderWidget : public QWidget {
 Q_OBJECT
 public:
-    explicit FolderWidget(const QString &folderName, QWidget *parent = nullptr);
+    explicit FolderWidget(const QPair<int, QString> &folder, QWidget *parent = nullptr);
 
-    QString folderName() const { return m_folderName; }
+    QString name() const { return m_folderName; }
 
+    int id() const { return m_folderId; }
+
+public slots:
+
+    void deselect();
 
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
@@ -27,6 +32,7 @@ signals:
 private:
     QString m_folderName;
     bool m_selected;
+    int m_folderId;
 
 private:
     void setBackgroundColor(const QColor &color);

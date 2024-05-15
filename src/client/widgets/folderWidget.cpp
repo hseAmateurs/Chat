@@ -8,8 +8,8 @@
 #include <QLabel>
 #include "folderWidget.h"
 
-FolderWidget::FolderWidget(const QString &folderName, QWidget *parent)
-        : QWidget(parent), m_folderName(folderName), m_selected(false) {
+FolderWidget::FolderWidget(const QPair<int, QString> &folder, QWidget *parent)
+        : QWidget(parent), m_folderName(folder.second), m_selected(false), m_folderId(folder.first) {
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     // Иконка папки
@@ -18,7 +18,7 @@ FolderWidget::FolderWidget(const QString &folderName, QWidget *parent)
     layout->addWidget(iconLabel, 0, Qt::AlignHCenter);
 
     // Текст с именем папки
-    QLabel *textLabel = new QLabel(folderName, this);
+    QLabel *textLabel = new QLabel(m_folderName, this);
     textLabel->setAlignment(Qt::AlignHCenter);
     layout->addWidget(textLabel, 0, Qt::AlignHCenter);
 
@@ -44,7 +44,7 @@ void FolderWidget::mousePressEvent(QMouseEvent *event) {
 }
 
 void FolderWidget::handleClick() {
-    setBackgroundColor(m_selected ? Qt::white : Qt::blue);
+    setBackgroundColor(m_selected ? QColor("#f0f0f0") : Qt::blue);
     m_selected = !m_selected;
 }
 
@@ -53,4 +53,8 @@ void FolderWidget::setBackgroundColor(const QColor &color) {
     pal.setColor(QPalette::Background, color);
     setAutoFillBackground(true);
     setPalette(pal);
+}
+
+void FolderWidget::deselect() {
+    if (m_selected) handleClick();
 }
