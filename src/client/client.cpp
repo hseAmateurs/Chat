@@ -7,8 +7,7 @@
 #include <iostream>
 #include <thread>
 #include <string>
-#include <mutex>
-#include <sstream>
+#include "functions.h"
 #define MAXLEN 256
 
 using namespace std;
@@ -16,17 +15,15 @@ using namespace std;
 int port;
 char IP[16];
 
-//thread thSend, thRecv;
-//bool exitFlag = false;
 SOCKADDR_IN addr;
 SOCKET connection;
 
+bool isLoggedIn = false;
+
 bool stableConnection = true;
 
-void sendMessage(int clientSocket);
 void handleMessage();
-string dataTime();
-//bool checkServer(int clientSocket);
+//string dataTime();
 
 int main(int argc, char* argv[]) {
 	// ====== WSAStartup  ======
@@ -37,18 +34,9 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	string name;
-
-	cout << "Enter IP adress to connect: ";
-	cin >> IP;
-	cout << "Enter port: ";
-	cin >> port;
-	cout << "Enter your name: ";
-	cin >> name;
-
 	int sizeofaddr = sizeof(addr);
-	addr.sin_addr.s_addr = inet_addr(IP);
-	addr.sin_port = htons(port);
+	addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	addr.sin_port = htons(1111);
 	addr.sin_family = AF_INET;
 
 	connection = socket(AF_INET, SOCK_STREAM, NULL);
@@ -59,20 +47,16 @@ int main(int argc, char* argv[]) {
 		if (enter == "try")
 			continue;
 	}
-	
-	std::cout << "== Connected to the server ==\n";
-
-	send(connection, name.c_str(), sizeof(name), 0);
+	string msg = "";
+	//std::cout << "Connected to the server. Enter any key to start\n";
+	//getline(cin, msg);
+	//send(connection, msg.c_str(), MAXLEN, 0);
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)handleMessage, 0, 0, 0);
-	string msg;
 	while (1)
 	{
 		getline(cin, msg);
-		if (msg.size() > 0)
-		{
-			msg = name + ": " + msg;
-			send(connection, msg.c_str(), MAXLEN, 0);
-		}
+		vector<string> splittedmsg = splitStringBySpace(msg);
+		doCommand(splittedmsg, connection, msg);
 	}
 
 	return 0;
@@ -80,35 +64,29 @@ int main(int argc, char* argv[]) {
 
 void handleMessage()
 {
+	string msg_buffer = "";
 	char  msg[MAXLEN];
 	while (true)
 	{
-		int bytesReceived = recv(connection, msg, sizeof(msg), 0);
-		if (bytesReceived > 0)
-			cout << msg << endl;
-		if (bytesReceived == -1)
+
+		if (isServerOnline(connection, msg))
 		{
-			string command;
+			receiveMessageToString(msg_buffer, msg);
+			if (msg_buffer.size() > 0) // if we received some chars
+				cout << msg_buffer << endl;
+			if (msg_buffer == "[Server] You are logged in")
+				isLoggedIn = true;
+		}
+		else
+		{
 			cout << "Connection lost\n";
 			return;
 		}
 	}
 }
 
-string dataTime() {
-	auto now = std::chrono::system_clock::now();
-	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-
-	struct tm* parts = std::localtime(&now_c);
-
-	std::stringstream ss;
-	ss << "[" << (parts->tm_year + 1900) << "-" << (parts->tm_mon + 1) << "-" << parts->tm_mday << " ";
-	ss << parts->tm_hour << ":" << parts->tm_min << ":" << parts->tm_sec << "]";
-
-	return ss.str();
-}
-
-/*bool checkServer(int clientSocket)
-{
-	
-}*/
+//  /help - выводит все команды
+//  /send name_user msg - отправить личное сообщение
+//  /sendroom id_room msg - отправить сообщение в папку
+//  /add id_room id - пригласить в комнату (сделать проверку, находится ли он сам в комнате)
+//  /leave id_room - покинуть комнату
