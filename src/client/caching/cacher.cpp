@@ -32,3 +32,15 @@ void Cacher::actualizeData() {
 bool Cacher::getSubFolders(int currentId, QVector<QPair<int, QString>> &subFolders) {
     return db.getSubFolders(userId, currentId, false, subFolders);
 }
+
+bool Cacher::getOnlineUsers(QVector<QPair<int, QString>> &users) {
+    bool res = db.getOnlineUsers(users);
+    const size_t size = users.size();
+    for (int i = 0; i < size; ++i) {
+        if (users[i].first == userId) {
+            users.remove(i);
+            break;
+        }
+    }
+    return res;
+}

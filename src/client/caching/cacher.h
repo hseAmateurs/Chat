@@ -31,6 +31,8 @@ public:
 
     bool getSubFolders(int currentId, QVector<QPair<int, QString>> &subFolders);
 
+    bool getOnlineUsers(QVector<QPair<int, QString>> &users);
+
 private:
     int userId;
     Database db;

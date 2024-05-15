@@ -277,3 +277,23 @@ bool Database::getSubFolders(const int userId, const int currentDirId, const boo
 
     return true;
 }
+
+bool Database::getOnlineUsers(QVector<QPair<int, QString>> &users) {
+    qDebug() << "Database:" << "Getting online users";
+    query.prepare("SELECT person.userId, person.name "
+                  "FROM Person person "
+                  "JOIN User user ON person.userId = user.id "
+                  "WHERE user.isOnline = 1");
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't get users info" << db.lastError().text();
+        return false;
+    }
+
+    while (query.next()) {
+        int id = query.value("id").toInt();
+        QString name = query.value("name").toString();
+        users.append({id, name});
+    }
+    return true;
+}

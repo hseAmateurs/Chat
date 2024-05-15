@@ -31,6 +31,8 @@ public:
 
     QString getLastMsgTime(int userId);
 
+    bool getOnlineUsers(QVector<QPair<int, QString>> &users);
+
     // Перезаписывает таблицу
     // TODO
     bool rewriteTable(int userId, const QString &tableName) { return false; };
