@@ -124,26 +124,26 @@ bool Database::addFolder(const int userId, const int parentId, const QString &na
 
 // Удаляет папку для всех (связи между пользователями и папками, сами папки + сообщения в них)
 bool Database::deleteFolder(int folderId) {
-    QVector<int> folderIds;
-    getSubFolderTree(-1, folderId, folderIds);
-    return multiRemoving(-1, "FolderUser", folderIds)
-           && multiRemoving(-1, "Message", folderIds)
-           && multiRemoving(-1, "Folder", folderIds);
+    QVector<QPair<int, QString>> folders;
+    getSubFolders(-1, folderId, true, folders);
+    return multiRemoving(-1, "FolderUser", folders)
+           && multiRemoving(-1, "Message", folders)
+           && multiRemoving(-1, "Folder", folders);
 }
 
 // При добавлении связи с папкой с подпапками тоже устанавливается связь
 bool Database::addFolderChain(int userId, int folderId) {
     qDebug() << "Database:" << "Adding folder chain between" << userId << "—" << folderId;
 
-    QVector<int> folderIds;
-    getSubFolderTree(-1, folderId, folderIds);
+    QVector<QPair<int, QString>> folders;
+    getSubFolders(-1, folderId, true, folders);
 
     QString queryStr = "INSERT INTO FolderUser (userId, folderId) VALUES ";
     QStringList valueList;
 
     // Формирование списка значений для добавления
-    for (const auto id: folderIds) {
-        valueList.append(QString("('%1', %2)").arg(userId).arg(id));
+    for (const auto &folder: folders) {
+        valueList.append(QString("('%1', %2)").arg(userId).arg(folder.first));
     }
     queryStr += valueList.join(", ");
 
@@ -156,14 +156,14 @@ bool Database::addFolderChain(int userId, int folderId) {
 }
 
 // Удаляет объекты из таблицы по ids
-bool Database::multiRemoving(int userId, const QString &tableName, const QVector<int> &ids) {
+bool Database::multiRemoving(int userId, const QString &tableName, const QVector<QPair<int, QString>> &folders) {
     qDebug() << "Database:" << "Deleting folder chain between" << userId << "—"
-             << "\nIds:" << ids;
+             << "\nIds:" << folders;
 
     QString queryStr = "DELETE FROM " + tableName + " WHERE id IN (";
     QStringList idList;
-    for (const auto id: ids)
-        idList.append(QString::number(id));
+    for (const auto &folder: folders)
+        idList.append(QString::number(folder.first));
 
     queryStr += idList.join(", ");
     queryStr += ")";
@@ -176,39 +176,6 @@ bool Database::multiRemoving(int userId, const QString &tableName, const QVector
         return false;
     }
 
-    return true;
-}
-
-// Поиск всех id папок, корневую, связанных с данной папкой и с юзером
-bool Database::getSubFolderTree(const int userId, const int rootId, QVector<int> &folderTree) {
-    QQueue<int> q;
-    q.enqueue(rootId);
-
-    while (!q.isEmpty()) {
-        qDebug() << "Database:" << "Getting subTree for" << userId << "—" << q.head();
-        folderTree.append(q.head());
-
-        if (userId != -1) {
-            query.prepare("SELECT f.id "
-                          "FROM Folder f "
-                          "JOIN FolderUser fu ON f.id = fu.folderId "
-                          "WHERE f.parentId = :parentId AND fu.userId = :userId");
-
-            query.bindValue(":userId", userId);
-        }
-        else query.prepare("SELECT id FROM Folder WHERE parentId = :parentId");
-
-        query.bindValue(":parentId", q.dequeue());
-
-        if (!query.exec()) {
-            qDebug() << "Database:" << "Can't get subTree" << db.lastError().text();
-            return false;
-        }
-
-        while (!query.next())
-            q.append(query.value("id").toInt());
-
-    }
     return true;
 }
 
@@ -248,14 +215,14 @@ bool Database::addMsg(int userId, int folderId, const QString &text) {
 bool Database::getMsgs(const int folderId, QVector<QVector<QString>> &msgs) {
     qDebug() << "Database:" << "Getting messages from folder" << folderId;
 
-    QVector<int> folderIds;
-    getSubFolderTree(-1, folderId, folderIds);
+    QVector<QPair<int, QString>> folders;
+    getSubFolders(-1, folderId, true, folders);
 
     QString queryStr = "SELECT * FROM Message WHERE chatId IN (";
 
     QStringList idList;
-    for (int chatId: folderIds) {
-        idList.append(QString::number(chatId));
+    for (const auto &folder: folders) {
+        idList.append(QString::number(folder.first));
     }
     queryStr += idList.join(", ");
     queryStr += ")";
@@ -273,26 +240,35 @@ bool Database::getMsgs(const int folderId, QVector<QVector<QString>> &msgs) {
     return true;
 }
 
-bool Database::getFolders(const int userId, const int rootId, QVector<QPair<int, QString>> &subFolders) {
-    qDebug() << "Database:" << "Getting sub folders from" << rootId;
+bool Database::getSubFolders(int userId, int currentDirId, bool tree, QVector<QPair<int, QString>> &subFolders) {
+    qDebug() << "Database:" << "Getting sub folders from" << currentDirId << "for" << userId << "with tree" << tree;
 
-    query.prepare("SELECT f.id, f.name "
-                  "FROM Folder f "
-                  "JOIN FolderUser fu ON f.id = fu.folderId "
-                  "WHERE f.parentId = :parentId AND fu.userId = :userId");
+    QQueue<int> q;
+    q.enqueue(currentDirId);
+    while (!q.isEmpty()) {
+        if (userId != -1) {
+            query.prepare("SELECT f.id, f.name "
+                          "FROM Folder f "
+                          "JOIN FolderUser fu ON f.id = fu.folderId "
+                          "WHERE f.parentId = :parentId AND fu.userId = :userId");
 
-    query.bindValue(":userId", userId);
-    query.bindValue(":parentId", rootId);
+            query.bindValue(":userId", userId);
+        }
+        else query.prepare("SELECT id, name FROM Folder WHERE parentId = :parentId");
+        query.bindValue(":parentId", q.dequeue());
 
-    if (!query.exec()) {
-        qDebug() << "Database:" << "Can't get sub folders" << db.lastError().text();
-        return false;
-    }
+        if (!query.exec()) {
+            qDebug() << "Database:" << "Can't get sub folders" << db.lastError().text();
+            return false;
+        }
 
-    while (!query.next()) {
-        int id = query.value("id").toInt();
-        QString name = query.value("name").toString();
-        subFolders.append({id, name});
+        while (!query.next()) {
+            int id = query.value("id").toInt();
+            QString name = query.value("name").toString();
+            subFolders.append({id, name});
+            if (tree)
+                q.append(id);
+        }
     }
 
     return true;
