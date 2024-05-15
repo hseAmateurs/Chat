@@ -20,7 +20,9 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    int currentStackIndex;
+    QVector<QPair<int, QWidget *>> currentFolder; // currentFolderId, pageParent
+
+    int getPos() { return currentFolder.last().first; }
 
 public slots:
 
@@ -32,7 +34,9 @@ private slots:
 
     void on_onlineButton_clicked();
 
-    void renderStackLayout(int curDirId);
+    void on_addFolderButton_clicked();
+
+    void renderStackLayout(int curDirId, QWidget *parentPage = nullptr);
 };
 
 #endif // MAINWINDOW_H

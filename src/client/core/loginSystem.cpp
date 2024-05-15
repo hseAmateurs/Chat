@@ -57,8 +57,8 @@ void LoginSystem::auth() {
     ms->setIcon(QMessageBox::Question);
     ms->setText("Вы уверены, что хотите создать новый аккаунт?");
 
-    QAbstractButton *noButton = ms->addButton(tr("Нет"), QMessageBox::NoRole);
-    QAbstractButton *yesButton = ms->addButton(tr("Да"), QMessageBox::YesRole);
+    ms->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    ms->setDefaultButton(QMessageBox::No);
 
     auto *message = new QMessageBox();
     message->setStyleSheet("QMessageBox{background-color: white;}"
@@ -89,12 +89,20 @@ void LoginSystem::auth() {
             message->exec();
             break;
         case cfg::NOT_FOUND:
-            message->setText("Неверный логин");
-            message->exec();
+            if(ms->exec() == QMessageBox::Yes) {
+                if(Cacher::instance().registerUser(login, pass)) emit openMainWindow();
+                else {
+                    message->setText("Регистрация временно недоступна");
+                    message->exec();
+                }
+            }
             break;
         case cfg::UNKNOWN:
             message->setText("Неизвестная ошибка");
             message->exec();
             break;
     }
+
+    delete ms;
+    delete message;
 }

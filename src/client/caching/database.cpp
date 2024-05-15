@@ -67,7 +67,7 @@ bool Database::getAuth(const QString &login, QString &password, int &userId) {
 
 // data = (id, login, pass)
 bool Database::addAuth(const QVector<QString> &data) {
-    qDebug() << "Database:" << "Adding auth data";
+    qDebug() << "Database:" << "Adding auth data" << data;
 
     query.prepare("INSERT INTO User (id, login, password) VALUES (?, ?, ?)");
     for (int i = 0; i < 3; ++i)
@@ -119,7 +119,7 @@ bool Database::addFolder(const int userId, const int parentId, const QString &na
         qDebug() << "Database:" << "Can't get new folder id" << db.lastError().text();
         return false;
     }
-    addFolderChain(userId, query.lastInsertId().toInt());
+    addFolderChain(userId, userId, query.lastInsertId().toInt());
 
     return true;
 }
@@ -134,26 +134,26 @@ bool Database::deleteFolder(int folderId) {
 }
 
 // При добавлении связи с папкой с подпапками тоже устанавливается связь
-bool Database::addFolderChain(int userId, int folderId) {
-    qDebug() << "Database:" << "Adding folder chain between" << userId << "-" << folderId;
+bool Database::addFolderChain(int parentUserId, int newUserId, int folderId) {
+    qDebug() << "Database:" << "Adding folder chain between" << newUserId << "-" << folderId << "for" << parentUserId;
 
     QVector<QPair<int, QString>> folders;
-    getSubFolders(-1, folderId, true, folders);
+    getSubFolders(parentUserId, folderId, true, folders);
 
-    QString queryStr = "INSERT INTO FolderUser (userId, folderId) VALUES ";
-    QStringList valueList;
+    const QString queryStr = "INSERT INTO FolderUser (userId, folderId) "
+                             "SELECT :userId, :folderId "
+                             "WHERE NOT EXISTS (SELECT 1 FROM FolderUser WHERE userId=:userId AND folderId=:folderId)";
 
-    // Формирование списка значений для добавления
     for (const auto &folder: folders) {
-        valueList.append(QString("('%1', %2)").arg(userId).arg(folder.first));
-    }
-    queryStr += valueList.join(", ");
+        query.prepare(queryStr);
+        query.bindValue(":userId", newUserId);
+        query.bindValue(":folderId", folder.first);
 
-    if (!query.exec(queryStr)) {
-        qDebug() << "Database:" << "Can't add folder chains" << db.lastError().text();
-        return false;
+        if (!query.exec()) {
+            qDebug() << "Database:" << "Can't add folder chains" << db.lastError().text();
+            return false;
+        }
     }
-
     return true;
 }
 
@@ -162,7 +162,11 @@ bool Database::multiRemoving(int userId, const QString &tableName, const QVector
     qDebug() << "Database:" << "Deleting folder chain between" << userId << "-"
              << "\nIds:" << folders;
 
-    QString queryStr = "DELETE FROM " + tableName + " WHERE id IN (";
+    QString idName;
+    if (tableName == "Folder") idName = "id";
+    else idName = "folderId";
+
+    QString queryStr = QString("DELETE FROM %1 WHERE %2 IN (").arg(tableName, idName);
     QStringList idList;
     for (const auto &folder: folders)
         idList.append(QString::number(folder.first));
@@ -291,9 +295,24 @@ bool Database::getOnlineUsers(QVector<QPair<int, QString>> &users) {
     }
 
     while (query.next()) {
-        int id = query.value("id").toInt();
+        int id = query.value("userId").toInt();
         QString name = query.value("name").toString();
         users.append({id, name});
     }
+    return true;
+}
+
+bool Database::getUserName(int userId, QString &username) {
+    qDebug() << "Database:" << "Getting username for" << userId;
+
+    query.prepare("SELECT name FROM Person WHERE userId=:userId");
+    query.bindValue(":userId", userId);
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't get username" << db.lastError();
+        return false;
+    }
+
+    if (query.next()) username = query.value("name").toString();
     return true;
 }

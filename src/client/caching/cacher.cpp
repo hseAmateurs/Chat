@@ -18,7 +18,10 @@ cfg::auth Cacher::isUserValid(const QString &login, const QString &password) {
     QString dbPass;
     if (!db.getAuth(login, dbPass, userId)) return cfg::UNKNOWN;
     if (dbPass.isEmpty()) return cfg::NOT_FOUND;
-    return (dbPass == password) ? cfg::OK : cfg::BAD_PASS;
+    if (dbPass == password) {
+        return cfg::OK;
+    }
+    return cfg::BAD_PASS;
 }
 
 void Cacher::actualizeData() {
@@ -43,4 +46,32 @@ bool Cacher::getOnlineUsers(QVector<QPair<int, QString>> &users) {
         }
     }
     return res;
+}
+
+bool Cacher::addUsersToFolder(const QVector<int> &invitedUsersIds, const int folderId) {
+    for (const auto invitedUserId: invitedUsersIds) {
+        if (!db.addFolderChain(userId, invitedUserId, folderId)) return false;
+    }
+    return true;
+}
+
+bool Cacher::registerUser(const QString &login, const QString &password) {
+    int userServerId = 190;
+    bool res = db.addAuth({QString::number(userServerId), login, password});
+    if (res) userId = userServerId;
+    return res;
+}
+
+QString Cacher::getUserName() {
+    QString name;
+    if (db.getUserName(userId, name)) return name;
+    return "Undefined";
+}
+
+bool Cacher::deleteFolder(int folderId) {
+    return db.deleteFolder(folderId);
+}
+
+bool Cacher::createFolder(int parentId, const QString &folderName) {
+    return db.addFolder(userId, parentId, folderName);
 }
