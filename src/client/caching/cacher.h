@@ -27,9 +27,12 @@ public:
     // data = (id, login, pass)
     bool auth(const QVector<QString> &data) { return db.addAuth(data); }
 
-    void actualizeData(int userId);
+    void actualizeData();
+
+    bool getSubFolders(int currentId, QVector<QPair<int, QString>> &subFolders);
 
 private:
+    int userId;
     Database db;
 
 private:
