@@ -20,7 +20,7 @@ namespace cfg {
 
     namespace foldersView {
         const int rowCount = 4;
-        const int columnCount = 5;
+        const int columnCount = 4;
         const int space = 20;
     }
 }
