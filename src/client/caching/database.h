@@ -29,6 +29,8 @@ public:
 
     bool addAuth(const QVector<QString> &data);
 
+    bool getUserName(int userId, QString &username);
+
     QString getLastMsgTime(int userId);
 
     bool getOnlineUsers(QVector<QPair<int, QString>> &users);

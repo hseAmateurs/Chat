@@ -37,6 +37,8 @@ public:
 
     bool registerUser(const QString& login, const QString& password);
 
+    QString getUserName();
+
 private:
     int userId;
     Database db;

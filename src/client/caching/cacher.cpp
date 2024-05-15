@@ -18,7 +18,10 @@ cfg::auth Cacher::isUserValid(const QString &login, const QString &password) {
     QString dbPass;
     if (!db.getAuth(login, dbPass, userId)) return cfg::UNKNOWN;
     if (dbPass.isEmpty()) return cfg::NOT_FOUND;
-    return (dbPass == password) ? cfg::OK : cfg::BAD_PASS;
+    if (dbPass == password) {
+        return cfg::OK;
+    }
+    return cfg::BAD_PASS;
 }
 
 void Cacher::actualizeData() {
@@ -57,4 +60,10 @@ bool Cacher::registerUser(const QString &login, const QString &password) {
     bool res = db.addAuth({QString::number(userServerId), login, password});
     if (res) userId = userServerId;
     return res;
+}
+
+QString Cacher::getUserName() {
+    QString name;
+    if (db.getUserName(userId, name)) return name;
+    return "Undefined";
 }

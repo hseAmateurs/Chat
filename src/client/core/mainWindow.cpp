@@ -14,6 +14,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     renderStackLayout(0);
+    ui->nameLabel->setText("Имя: " + Cacher::instance().getUserName());
+    QFont font;
+    font.setPointSize(12);
+    ui->nameLabel->setFont(font);
 }
 
 void MainWindow::renderStackLayout(int curDirId) {

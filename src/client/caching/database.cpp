@@ -297,3 +297,18 @@ bool Database::getOnlineUsers(QVector<QPair<int, QString>> &users) {
     }
     return true;
 }
+
+bool Database::getUserName(int userId, QString &username) {
+    qDebug() << "Database:" << "Getting username for" << userId;
+
+    query.prepare("SELECT name FROM Person WHERE userId=:userId");
+    query.bindValue(":userId", userId);
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't get username" << db.lastError();
+        return false;
+    }
+
+    if (query.next()) username = query.value("name").toString();
+    return true;
+}
