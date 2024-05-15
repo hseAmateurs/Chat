@@ -33,7 +33,7 @@ public:
 
     // Перезаписывает таблицу
     // TODO
-    bool rewriteTable(int userId, const QString &tableName) {  };
+    bool rewriteTable(int userId, const QString &tableName) { return false; };
 
     bool addMsg(int userId, int folderId, const QString &text);
 

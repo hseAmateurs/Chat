@@ -38,11 +38,18 @@ set(UI_FILES
         core/chatwindow.ui
 )
 
+set(WIDGETS
+        widgets/folderWidget.cpp
+        widgets/folderWidget.h
+)
+
 add_executable(Client
         ${SOURCES}
         ${SETTINGS}
         ${CACHING}
         ${UI_FILES}
+        ${WIDGETS}
+        textures/res.qrc
 )
 
 target_link_libraries(Client PRIVATE Qt5::Widgets Qt5::Sql)
