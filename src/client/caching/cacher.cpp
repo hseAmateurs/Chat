@@ -44,3 +44,17 @@ bool Cacher::getOnlineUsers(QVector<QPair<int, QString>> &users) {
     }
     return res;
 }
+
+bool Cacher::addUsersToFolder(const QVector<int> &invitedUsersIds, const int folderId) {
+    for (const auto invitedUserId: invitedUsersIds) {
+        if (!db.addFolderChain(invitedUserId, folderId)) return false;
+    }
+    return true;
+}
+
+bool Cacher::registerUser(const QString &login, const QString &password) {
+    int userServerId = 190;
+    bool res = db.addAuth({QString::number(userServerId), login, password});
+    if (res) userId = userServerId;
+    return res;
+}

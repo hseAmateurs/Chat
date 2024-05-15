@@ -33,6 +33,10 @@ public:
 
     bool getOnlineUsers(QVector<QPair<int, QString>> &users);
 
+    bool addUsersToFolder(const QVector<int> &invitedUsersIds, int folderId);
+
+    bool registerUser(const QString& login, const QString& password);
+
 private:
     int userId;
     Database db;

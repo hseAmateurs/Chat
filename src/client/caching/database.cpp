@@ -67,7 +67,7 @@ bool Database::getAuth(const QString &login, QString &password, int &userId) {
 
 // data = (id, login, pass)
 bool Database::addAuth(const QVector<QString> &data) {
-    qDebug() << "Database:" << "Adding auth data";
+    qDebug() << "Database:" << "Adding auth data" << data;
 
     query.prepare("INSERT INTO User (id, login, password) VALUES (?, ?, ?)");
     for (int i = 0; i < 3; ++i)
