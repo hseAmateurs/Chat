@@ -16,6 +16,12 @@
     <height>442</height>
    </size>
   </property>
+  <property name="maximumSize">
+   <size>
+    <width>422</width>
+    <height>442</height>
+   </size>
+  </property>
   <property name="sizeIncrement">
    <size>
     <width>0</width>

@@ -25,15 +25,17 @@ public:
 
     ~Database() { db.close(); }
 
-    bool getAuth(const QString &login, QString &password);
+    bool getAuth(const QString &login, QString &password, int &userId);
 
     bool addAuth(const QVector<QString> &data);
 
     QString getLastMsgTime(int userId);
 
+    bool getOnlineUsers(QVector<QPair<int, QString>> &users);
+
     // Перезаписывает таблицу
     // TODO
-    bool rewriteTable(int userId, const QString &tableName) {  };
+    bool rewriteTable(int userId, const QString &tableName) { return false; };
 
     bool addMsg(int userId, int folderId, const QString &text);
 
@@ -42,7 +44,7 @@ public:
     bool getMsgs(int folderId, QVector<QVector<QString>> &msgs);
 
     // Возвращает подпапки, вложенные в данную папку
-    bool getFolders(int userId, int rootId, QVector<QPair<int, QString>> &subFolders);
+    bool getSubFolders(int userId, int currentDirId, bool tree, QVector<QPair<int, QString>> &subFolders);
 
     bool updateData(int id, const QString &key, const QString &value, const QString &tableName);
 
@@ -54,10 +56,7 @@ public:
     bool addFolderChain(int userId, int folderId);
 
     // Удаляет все связи (включая связи с подпапками)/сообщения/папки, если userId == -1, то userId не учитывается
-    bool multiRemoving(int userId, const QString &tableName, const QVector<int> &ids);
-
-    // Получает поддерево для папки rootId, если userId == -1, то таблица FolderUser не учитывается
-    bool getSubFolderTree(int userId, int rootId, QVector<int> &folderTree);
+    bool multiRemoving(int userId, const QString &tableName, const QVector<QPair<int, QString>> &folders);
 
 
 private:

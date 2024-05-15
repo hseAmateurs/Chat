@@ -7,20 +7,40 @@
 
 void Cacher::loadConfig(const QString &exePath) {
     db.connect(exePath);
+// ---
+    QString dbPass;
+    db.getAuth("aqwer", dbPass, userId);
 //    db.addAuth({"1005", "aqwer", "pass_1"});
+// ---
 }
 
 cfg::auth Cacher::isUserValid(const QString &login, const QString &password) {
     QString dbPass;
-    if (!db.getAuth(login, dbPass)) return cfg::UNKNOWN;
+    if (!db.getAuth(login, dbPass, userId)) return cfg::UNKNOWN;
     if (dbPass.isEmpty()) return cfg::NOT_FOUND;
     return (dbPass == password) ? cfg::OK : cfg::BAD_PASS;
 }
 
-void Cacher::actualizeData(const int userId) {
+void Cacher::actualizeData() {
     QString lastMsgTime = db.getLastMsgTime(userId);
 
     // Отправка серверу запроса на получение всей актуальной информации
 
     qDebug() << lastMsgTime;
+}
+
+bool Cacher::getSubFolders(int currentId, QVector<QPair<int, QString>> &subFolders) {
+    return db.getSubFolders(userId, currentId, false, subFolders);
+}
+
+bool Cacher::getOnlineUsers(QVector<QPair<int, QString>> &users) {
+    bool res = db.getOnlineUsers(users);
+    const size_t size = users.size();
+    for (int i = 0; i < size; ++i) {
+        if (users[i].first == userId) {
+            users.remove(i);
+            break;
+        }
+    }
+    return res;
 }

@@ -2,8 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "loginSystem.h"
-#include "chatWindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,11 +13,14 @@ Q_OBJECT
 public:
     MainWindow(QWidget *parent = nullptr);
 
+    bool getUsers(int userId, int rootId, QVector<QPair<int, QString>> &subFolders);
+
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
-    ChatWindow *chat;
+
+    int currentStackIndex;
 
 public slots:
 
@@ -27,7 +28,11 @@ public slots:
 
 private slots:
 
-    void on_pushButton_clicked();
+    void on_backButton_clicked();
+
+    void on_onlineButton_clicked();
+
+    void renderStackLayout(int curDirId);
 };
 
 #endif // MAINWINDOW_H

@@ -11,9 +11,11 @@ int main(int argc, char *argv[]) {
 
     MainWindow w;
 
-    auto *loginWindow = new LoginSystem();
-    QObject::connect(loginWindow, &LoginSystem::openMainWindow, &w, &MainWindow::open);
-    loginWindow->show();
+    w.show();
+
+//    auto *loginWindow = new LoginSystem();
+//    QObject::connect(loginWindow, &LoginSystem::openMainWindow, &w, &MainWindow::open);
+//    loginWindow->show();
 
     return a.exec();
 }

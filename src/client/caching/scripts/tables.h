@@ -11,7 +11,8 @@
 const QString USER = "CREATE TABLE User ("
                      "id INTEGER PRIMARY KEY,"
                      "login TEXT UNIQUE,"
-                     "password TEXT"
+                     "password TEXT,"
+                     "isOnline INTEGER DEFAULT 0"
                      ");";
 
 const QString PERSON = "CREATE TABLE Person ("

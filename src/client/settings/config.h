@@ -17,6 +17,12 @@ namespace cfg {
         NOT_FOUND,
         UNKNOWN
     };
+
+    namespace foldersView {
+        const int rowCount = 4;
+        const int columnCount = 4;
+        const int space = 20;
+    }
 }
 
 #endif //CHAT_CONFIG_H
