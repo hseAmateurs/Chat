@@ -24,27 +24,11 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: #aeaeae</string>
+     <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>-1</number>
     </property>
-    <widget class="QWidget" name="page">
-     <widget class="QScrollBar" name="verticalScrollBar">
-      <property name="geometry">
-       <rect>
-        <x>490</x>
-        <y>0</y>
-        <width>21</width>
-        <height>521</height>
-       </rect>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="page_2"/>
    </widget>
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">
@@ -58,7 +42,7 @@
     <property name="styleSheet">
      <string notr="true">background-color: #d0f3e6;</string>
     </property>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="profileLabel">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -71,7 +55,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;Профиль&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="nameLabel">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -120,7 +104,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="backButton">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -137,7 +121,7 @@ background-color: #A9F3E6;</string>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="onlineButton">
         <property name="styleSheet">
          <string notr="true">background-color: #A9F3E6;
 height: 40%</string>
@@ -148,7 +132,7 @@ height: 40%</string>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="chatButton">
         <property name="styleSheet">
          <string notr="true">background-color: #A9F3E6;
 height: 40%</string>

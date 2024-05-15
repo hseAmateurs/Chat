@@ -2,9 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QStackedWidget>
-#include "loginSystem.h"
-#include "chatWindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,7 +17,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QStackedWidget *stackedWidget;
+
+    int currentStackIndex;
 
     int user_id = 0;
     int current_folder_id = 0;
@@ -30,8 +28,9 @@ public slots:
     void open() { show(); };
 
 private slots:
-    void on_pushButton_clicked();
-    void on_pushButton_3_clicked();
+    void on_backButton_clicked();
+    void on_onlineButton_clicked();
+    void renderStackLayout(int curDirId);
 };
 
 #endif // MAINWINDOW_H

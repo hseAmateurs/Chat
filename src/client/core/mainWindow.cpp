@@ -3,58 +3,58 @@
 #include "ui_mainwindow.h"
 #include "../settings/config.h"
 #include "../widgets/folderWidget.h"
+#include "../caching/cacher.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
-        : QMainWindow(parent), ui(new Ui::MainWindow) {
+        : QMainWindow(parent), ui(new Ui::MainWindow), currentStackIndex(0) {
     ui->setupUi(this);
 
-    stackedWidget = findChild<QStackedWidget *>("stackedWidget");
-    if (!stackedWidget) qDebug() << "Can't find stackedWidget";
+    renderStackLayout(0);
+}
 
-    QWidget *rootPage = new QWidget();
-    auto *gridLayoutRoot = new QGridLayout(rootPage);
+void MainWindow::renderStackLayout(int curDirId) {
+    QVector<QPair<int, QString>> folders;
+    Cacher::instance().getSubFolders(curDirId, folders);
+
+    QWidget *page = new QWidget();
+    auto *gridLayoutRoot = new QGridLayout(page);
     gridLayoutRoot->setSpacing(cfg::foldersView::space);
 
-    for (int row = 0; row < cfg::foldersView::rowCount; ++row) {
-        for (int col = 0; col < cfg::foldersView::columnCount; ++col) {
-            QString folderName = QString("Папка %1").arg(row * cfg::foldersView::columnCount + col + 1);
-            auto *folderWidget = new FolderWidget(folderName);
-            gridLayoutRoot->addWidget(folderWidget, row, col);
-            // Подключаем обработчик сигнала clicked для перехода при двойном клике
-            QObject::connect(folderWidget, &FolderWidget::clicked, [this, folderWidget]() {
-                // Двойной щелчок: переходим к следующему layout
-                qDebug() << "Next folder" << folderWidget->folderName();
-                QWidget *nextWidget = new QWidget();
-                QVBoxLayout *nextLayout = new QVBoxLayout(nextWidget);
+    int column = 0;
+    int row = 0;
+    for (const auto &folder: folders) {
+        column %= cfg::foldersView::columnCount;
+        if (!column) row++;
 
-                QLabel *label = new QLabel("Содержимое папки " + folderWidget->folderName(), nextWidget);
+        auto *folderWidget = new FolderWidget(folder);
+        gridLayoutRoot->addWidget(folderWidget, row, column);
+        QObject::connect(folderWidget, &FolderWidget::clicked, [this, folderWidget]() {
+            currentStackIndex++;
+            qDebug() << "Next folder" << folderWidget->id() << folderWidget->name();
+            renderStackLayout(folderWidget->id());
+        });
+        QObject::connect(ui->backButton, &QPushButton::clicked, folderWidget, &FolderWidget::deselect);
 
-                QPushButton *backButton = new QPushButton("Назад", nextWidget);
-                QObject::connect(backButton, &QPushButton::clicked, [this]() { stackedWidget->setCurrentIndex(0);    });
-
-                nextLayout->addWidget(label);
-                nextLayout->addWidget(backButton);
-                stackedWidget->addWidget(nextWidget);
-                stackedWidget->setCurrentWidget(nextWidget);
-            });
-        }
+        column++;
     }
 
-    stackedWidget->addWidget(rootPage);
-    stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->addWidget(page);
+    ui->stackedWidget->setCurrentWidget(page);
 }
 
 MainWindow::~MainWindow() {
     delete ui;
-    delete stackedWidget;
+    delete ui->stackedWidget;
 }
 
+void MainWindow::on_backButton_clicked() {
+    qDebug() << "Clicked" << currentStackIndex;
+    if (!currentStackIndex) return;
+    ui->stackedWidget->setCurrentIndex(--currentStackIndex);
+}
 
-
-
-void MainWindow::on_pushButton_3_clicked()
-{
+void MainWindow::on_onlineButton_clicked() {
     QVector<QPair<int, QString>> users;
 
     QDialog dialogBox;
@@ -66,5 +66,3 @@ void MainWindow::on_pushButton_3_clicked()
 
     dialogBox.exec();
 }
-
-
