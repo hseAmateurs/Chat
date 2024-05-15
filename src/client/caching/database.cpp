@@ -104,7 +104,7 @@ QString Database::getLastMsgTime(const int userId) {
 }
 
 bool Database::addFolder(const int userId, const int parentId, const QString &name) {
-    qDebug() << "Database:" << "Adding folder for" << userId << "—" << name << "—" << parentId;
+    qDebug() << "Database:" << "Adding folder for" << userId << "-" << name << "-" << parentId;
 
     query.prepare("INSERT INTO Folder (parentId, name) VALUES (:parentId, :name)");
     query.bindValue(":parentId", parentId);
@@ -135,7 +135,7 @@ bool Database::deleteFolder(int folderId) {
 
 // При добавлении связи с папкой с подпапками тоже устанавливается связь
 bool Database::addFolderChain(int userId, int folderId) {
-    qDebug() << "Database:" << "Adding folder chain between" << userId << "—" << folderId;
+    qDebug() << "Database:" << "Adding folder chain between" << userId << "-" << folderId;
 
     QVector<QPair<int, QString>> folders;
     getSubFolders(-1, folderId, true, folders);
@@ -159,7 +159,7 @@ bool Database::addFolderChain(int userId, int folderId) {
 
 // Удаляет объекты из таблицы по ids
 bool Database::multiRemoving(int userId, const QString &tableName, const QVector<QPair<int, QString>> &folders) {
-    qDebug() << "Database:" << "Deleting folder chain between" << userId << "—"
+    qDebug() << "Database:" << "Deleting folder chain between" << userId << "-"
              << "\nIds:" << folders;
 
     QString queryStr = "DELETE FROM " + tableName + " WHERE id IN (";
@@ -182,8 +182,8 @@ bool Database::multiRemoving(int userId, const QString &tableName, const QVector
 }
 
 bool Database::updateData(int id, const QString &key, const QString &value, const QString &tableName) {
-    qDebug() << "Database:" << "Renaming for" << id << "—" << key << "—" << value
-             << "—" << tableName;
+    qDebug() << "Database:" << "Renaming for" << id << "-" << key << "-" << value
+             << "-" << tableName;
 
     const QString queryStr = QString("UPDATE %1 SET %2 = :value WHERE id = :id").arg(tableName, key);
     query.prepare(queryStr);
@@ -242,8 +242,10 @@ bool Database::getMsgs(const int folderId, QVector<QVector<QString>> &msgs) {
     return true;
 }
 
-bool Database::getSubFolders(const int userId, const int currentDirId, const bool tree, QVector<QPair<int, QString>> &subFolders) {
+bool Database::getSubFolders(const int userId, const int currentDirId, const bool tree,
+                             QVector<QPair<int, QString>> &subFolders) {
     qDebug() << "Database:" << "Getting sub folders from" << currentDirId << "for" << userId << "with tree" << tree;
+    if (tree) subFolders.append({currentDirId, ""});
 
     QQueue<int> q;
     q.enqueue(currentDirId);
