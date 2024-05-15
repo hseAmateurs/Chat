@@ -2,6 +2,7 @@
 #include<QListWidget>
 #include<QVBoxLayout>
 #include<QtDebug>
+#include<QInputDialog>
 #include "mainWindow.h"
 #include "ui_mainwindow.h"
 
@@ -39,7 +40,7 @@ void MainWindow::on_pushButton_3_clicked()
 
     QDialog *dialogBox = new QDialog(this);
     QVBoxLayout* layout = new QVBoxLayout(dialogBox);
-    QListWidget *usersList = new QListWidget(dialogBox);
+    QListWidget *usersList = new QListWidget();
     getUsers(user_id, current_folder_id, users);
     for (const auto& user : users){
         QListWidgetItem *item = new QListWidgetItem(user.second, usersList);
@@ -66,4 +67,14 @@ void MainWindow::on_pushButton_3_clicked()
     dialogBox->exec();
 }
 
+
+
+void MainWindow::on_pushButton_8_clicked()
+{
+    bool ok;
+    QString folderName = QInputDialog::getText(this, "Подтверждение действия", "Введите название папки", QLineEdit::Normal, "root", &ok);
+    if (ok && !folderName.isEmpty()){
+        qDebug() << folderName;
+    }
+}
 
