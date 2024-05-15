@@ -25,7 +25,7 @@ public:
 
     ~Database() { db.close(); }
 
-    bool getAuth(const QString &login, QString &password);
+    bool getAuth(const QString &login, QString &password, int &userId);
 
     bool addAuth(const QVector<QString> &data);
 

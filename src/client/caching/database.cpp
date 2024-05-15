@@ -47,7 +47,7 @@ bool Database::createTables() {
     return true;
 }
 
-bool Database::getAuth(const QString &login, QString &password) {
+bool Database::getAuth(const QString &login, QString &password, int &userId) {
     qDebug() << "Database:" << "Getting auth data";
 
     query.prepare("SELECT * FROM User WHERE login=:login");
@@ -58,8 +58,10 @@ bool Database::getAuth(const QString &login, QString &password) {
         return false;
     }
 
-    if (query.next())
+    if (query.next()) {
         password = query.value("password").toString();
+        userId = query.value("id").toInt();
+    }
     return true;
 }
 
@@ -240,7 +242,7 @@ bool Database::getMsgs(const int folderId, QVector<QVector<QString>> &msgs) {
     return true;
 }
 
-bool Database::getSubFolders(int userId, int currentDirId, bool tree, QVector<QPair<int, QString>> &subFolders) {
+bool Database::getSubFolders(const int userId, const int currentDirId, const bool tree, QVector<QPair<int, QString>> &subFolders) {
     qDebug() << "Database:" << "Getting sub folders from" << currentDirId << "for" << userId << "with tree" << tree;
 
     QQueue<int> q;
@@ -262,7 +264,7 @@ bool Database::getSubFolders(int userId, int currentDirId, bool tree, QVector<QP
             return false;
         }
 
-        while (!query.next()) {
+        while (query.next()) {
             int id = query.value("id").toInt();
             QString name = query.value("name").toString();
             subFolders.append({id, name});
