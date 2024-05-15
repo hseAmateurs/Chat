@@ -11,16 +11,16 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 set(SOURCES
         client.cpp
-        mainwindow.cpp
-        mainwindow.h
+        mainWindow.cpp
+        mainWindow.h
         mainwindow.ui
-        loginsystem.cpp
-        loginsystem.h
+        loginSystem.cpp
+        loginSystem.h
         loginsystem.ui
-        Authorisation.cpp
-        Authorisation.h
-        chatwindow.cpp
-        chatwindow.h
+        authorisation.cpp
+        authorisation.h
+        chatWindow.cpp
+        chatWindow.h
         chatwindow.ui
 )
 

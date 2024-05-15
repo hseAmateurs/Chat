@@ -1,21 +1,18 @@
-#include "loginsystem.h"
+#include "loginSystem.h"
 #include "ui_loginsystem.h"
 #include <QMessageBox>
 
 LoginSystem::LoginSystem(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::LoginSystem)
-{
+        QDialog(parent),
+        ui(new Ui::LoginSystem) {
     ui->setupUi(this);
 }
 
-LoginSystem::~LoginSystem()
-{
+LoginSystem::~LoginSystem() {
     delete ui;
 }
 
-void LoginSystem::on_pushButton_clicked()
-{
+void LoginSystem::on_pushButton_clicked() {
     QString log = ui->login->text();
     std::string login = log.toUtf8().constData();
     QString pas = ui->pass->text();
@@ -25,25 +22,22 @@ void LoginSystem::on_pushButton_clicked()
     // This message box is used when the person has entered a new login and password
     QMessageBox *ms = new QMessageBox();
     ms->setStyleSheet("QMessageBox{background-color: white;}"
-                       "QPushButton{background-color: #E5E5E5; color: black;}");
+                      "QPushButton{background-color: #E5E5E5; color: black;}");
     ms->setWindowTitle("Создание аккаунта");
     ms->setIcon(QMessageBox::Question);
     ms->setText("Вы уверены, что хотите создать новый аккаунт?");
-    QAbstractButton* noButton = ms->addButton(tr("Нет"), QMessageBox::NoRole);
-    QAbstractButton* yesButton = ms->addButton(tr("Да"), QMessageBox::YesRole);
+    QAbstractButton *noButton = ms->addButton(tr("Нет"), QMessageBox::NoRole);
+    QAbstractButton *yesButton = ms->addButton(tr("Да"), QMessageBox::YesRole);
 
     QMessageBox *message = new QMessageBox();
     message->setStyleSheet("QMessageBox{background-color: white;}"
-                       "QPushButton{background-color: #E5E5E5; color: black;}");
+                           "QPushButton{background-color: #E5E5E5; color: black;}");
     message->setWindowTitle("Ошибка входа");
     message->setIcon(QMessageBox::Warning);
 
-    if (!data.isEmptyLogin() && !data.isEmptyPass())
-    {
-        if (data.isCorrectPass())
-        {
-            if (data.isCorrectData(login, pass))
-            {
+    if (!data.isEmptyLogin() && !data.isEmptyPass()) {
+        if (data.isCorrectPass()) {
+            if (data.isCorrectData(login, pass)) {
                 // if an user is new
                 /*
                 ms->exec();
@@ -60,24 +54,20 @@ void LoginSystem::on_pushButton_clicked()
 
 
             }
-            else
-            {
+            else {
                 message->setText("Неверный логин или пароль");
                 message->exec();
             }
         }
-        else
-        {
+        else {
             message->setText("Пароль должен быть не менее\n"
                              "5 символов, содержать заглавные,\n"
                              "строчные латинские буквы и цифры");
             message->exec();
         }
     }
-    else if (data.isEmptyLogin() || data.isEmptyPass())
-    {
+    else if (data.isEmptyLogin() || data.isEmptyPass()) {
         message->setText("Необходимо заполнить все поля");
         message->exec();
     }
 }
-

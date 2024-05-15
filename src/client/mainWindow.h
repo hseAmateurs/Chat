@@ -2,19 +2,19 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "loginsystem.h"
-#include "chatwindow.h"
+#include "loginSystem.h"
+#include "chatWindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow : public QMainWindow {
+Q_OBJECT
 
 public:
     MainWindow(QWidget *parent = nullptr);
+
     ~MainWindow();
 
 private:
@@ -22,7 +22,9 @@ private:
     ChatWindow *chat;
 
 private slots:
+
     void open(); // an openning the main window function
     void on_pushButton_clicked(); // event which does pushing the button
 };
+
 #endif // MAINWINDOW_H

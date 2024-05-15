@@ -10,12 +10,11 @@
 //#include "textarea.h"
 
 namespace Ui {
-class chatwindow;
+    class ChatWindow;
 }
 
-class ChatWindow : public QDialog
-{
-    Q_OBJECT
+class ChatWindow : public QDialog {
+Q_OBJECT
 
 public:
     explicit ChatWindow(QWidget *parent = nullptr);
@@ -23,7 +22,7 @@ public:
     ~ChatWindow();
 
 private:
-    Ui::chatwindow *ui;
+    Ui::ChatWindow *ui;
     QVBoxLayout *lay;
     QHBoxLayout *hlay1;
     QHBoxLayout *hlay2;
@@ -31,9 +30,11 @@ private:
     //TextArea *textArea;
 
 signals:
+
     void openMainWindow(); // create a signal, which opens the main window
 
 private slots:
+
     void on_pushButton_2_clicked(); // event, which does pushing the button
     void on_pushButton_clicked();
     //void onEnterPressed();

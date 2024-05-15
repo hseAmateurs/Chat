@@ -1,4 +1,4 @@
-#include "chatwindow.h"
+#include "chatWindow.h"
 #include "ui_chatwindow.h"
 #include <QLabel>
 #include <QVBoxLayout>
@@ -7,9 +7,8 @@
 #include <QScrollBar>
 
 ChatWindow::ChatWindow(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::chatwindow)
-{
+        QDialog(parent),
+        ui(new Ui::ChatWindow) {
     ui->setupUi(this);
 
     lay = new QVBoxLayout();
@@ -25,6 +24,7 @@ ChatWindow::ChatWindow(QWidget *parent) :
     scroll->setGeometry(9, 79, 481, 401);
     scroll->setWidgetResizable(true);
 }
+
 
 void ChatWindow::sendMessage(int from, double time, std::string text)
 {
@@ -95,39 +95,14 @@ ChatWindow::~ChatWindow()
     delete ui;
 }
 
-void ChatWindow::on_pushButton_2_clicked()
-{
+void ChatWindow::on_pushButton_2_clicked() {
     this->close(); // close the chatting window
     emit openMainWindow(); // send a signal from the chatting window to the main window
 }
 
 
-void ChatWindow::on_pushButton_clicked()
-{
+void ChatWindow::on_pushButton_clicked() {
     QString message = ui->message->toPlainText();
     std::string text = message.toUtf8().constData(); // here you can send this message on server or on data base
     sendMessage(0, 1.45, text); // server sends a message
 }
-
-//void ChatWindow::onEnterPressed()
-//{
-//    //QString message = ui->message->toPlainText();
-//    //std::string text = message.toUtf8().constData(); // here you can send this message on server or on data base
-//    //sendMessage(0, 1.45, text); // server sends a message
-//    on_pushButton_clicked();
-//}
-
-//void ChatWindow::keyPressEvent(QKeyEvent *event)
-//{
-//    if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-//    {
-//        QString message = ui->message->toPlainText();
-//        std::string text = message.toUtf8().constData(); // here you can send this message on server or on data base
-//        sendMessage(0, 1.45, text); // server sends a message
-//    }
-//    else
-//    {
-//        QWidget::keyPressEvent(event);
-//    }
-//}
-

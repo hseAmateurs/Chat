@@ -1,10 +1,8 @@
-#include "mainwindow.h"
-#include "./ui_mainwindow.h"
+#include "mainWindow.h"
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+        : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     LoginSystem *loginWindow = new LoginSystem(); // create a dynamic object of the login window
     QObject::connect(loginWindow, &LoginSystem::openMainWindow, this, &MainWindow::open);
@@ -14,25 +12,22 @@ MainWindow::MainWindow(QWidget *parent)
     // 4 - the slot function
     loginWindow->show(); // show the login window from the main window object
     chat = new ChatWindow();
-    chat->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint); // flags for delition buttons in the heading
+    chat->setWindowFlags(
+            Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint); // flags for delition buttons in the heading
     QObject::connect(chat, &ChatWindow::openMainWindow, this, &MainWindow::open);
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::open()
-{
+void MainWindow::open() {
     this->show();
 }
 
 
-void MainWindow::on_pushButton_clicked()
-{
+void MainWindow::on_pushButton_clicked() {
     this->close();
     chat->show();
     chat->sendMessage(1, 1.25, "Привет!");
 }
-
