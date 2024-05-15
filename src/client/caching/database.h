@@ -53,7 +53,7 @@ public:
     bool deleteFolder(int folderId);
 
     // Добавляет все связи (включая связи с подпапками)
-    bool addFolderChain(int userId, int folderId);
+    bool addFolderChain(int parentUserId, int newUserId, int folderId);
 
     // Удаляет все связи (включая связи с подпапками)/сообщения/папки, если userId == -1, то userId не учитывается
     bool multiRemoving(int userId, const QString &tableName, const QVector<QPair<int, QString>> &folders);

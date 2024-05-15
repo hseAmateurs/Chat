@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 void MainWindow::renderStackLayout(int curDirId) {
+    currentFolderId.append(curDirId);
+
     QVector<QPair<int, QString>> folders;
     Cacher::instance().getSubFolders(curDirId, folders);
 
@@ -57,10 +59,16 @@ MainWindow::~MainWindow() {
 void MainWindow::on_backButton_clicked() {
     qDebug() << "Clicked" << currentStackIndex;
     if (!currentStackIndex) return;
+    currentFolderId.pop_back();
     ui->stackedWidget->setCurrentIndex(--currentStackIndex);
 }
 
 void MainWindow::on_onlineButton_clicked() {
+    if (!currentFolderId.last()) {
+        QMessageBox::warning(nullptr, "Ошибка!", "Вы не можете добавить пользователей в корень чата. Создайте папку");
+        return;
+    }
+
     QVector<QPair<int, QString>> users;
 
     auto *dialogBox = new QDialog(this);
@@ -92,5 +100,6 @@ void MainWindow::on_onlineButton_clicked() {
 
     dialogBox->exec();
 
-    qDebug() << selectedUsersIds;
+    if (!selectedUsersIds.isEmpty())
+        Cacher::instance().addUsersToFolder(selectedUsersIds, currentFolderId.last());
 }

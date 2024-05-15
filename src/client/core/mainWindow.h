@@ -21,6 +21,7 @@ private:
     Ui::MainWindow *ui;
 
     int currentStackIndex;
+    QVector<int> currentFolderId;
 
 public slots:
 

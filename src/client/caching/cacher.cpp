@@ -47,7 +47,7 @@ bool Cacher::getOnlineUsers(QVector<QPair<int, QString>> &users) {
 
 bool Cacher::addUsersToFolder(const QVector<int> &invitedUsersIds, const int folderId) {
     for (const auto invitedUserId: invitedUsersIds) {
-        if (!db.addFolderChain(invitedUserId, folderId)) return false;
+        if (!db.addFolderChain(userId, invitedUserId, folderId)) return false;
     }
     return true;
 }

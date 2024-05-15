@@ -119,7 +119,7 @@ bool Database::addFolder(const int userId, const int parentId, const QString &na
         qDebug() << "Database:" << "Can't get new folder id" << db.lastError().text();
         return false;
     }
-    addFolderChain(userId, query.lastInsertId().toInt());
+    addFolderChain(userId, userId, query.lastInsertId().toInt());
 
     return true;
 }
@@ -134,18 +134,18 @@ bool Database::deleteFolder(int folderId) {
 }
 
 // При добавлении связи с папкой с подпапками тоже устанавливается связь
-bool Database::addFolderChain(int userId, int folderId) {
-    qDebug() << "Database:" << "Adding folder chain between" << userId << "-" << folderId;
+bool Database::addFolderChain(int parentUserId, int newUserId, int folderId) {
+    qDebug() << "Database:" << "Adding folder chain between" << newUserId << "-" << folderId << "for" << parentUserId;
 
     QVector<QPair<int, QString>> folders;
-    getSubFolders(-1, folderId, true, folders);
+    getSubFolders(parentUserId, folderId, true, folders);
 
     QString queryStr = "INSERT INTO FolderUser (userId, folderId) VALUES ";
     QStringList valueList;
 
     // Формирование списка значений для добавления
     for (const auto &folder: folders) {
-        valueList.append(QString("('%1', %2)").arg(userId).arg(folder.first));
+        valueList.append(QString("('%1', %2)").arg(newUserId).arg(folder.first));
     }
     queryStr += valueList.join(", ");
 
@@ -291,7 +291,7 @@ bool Database::getOnlineUsers(QVector<QPair<int, QString>> &users) {
     }
 
     while (query.next()) {
-        int id = query.value("id").toInt();
+        int id = query.value("userId").toInt();
         QString name = query.value("name").toString();
         users.append({id, name});
     }
