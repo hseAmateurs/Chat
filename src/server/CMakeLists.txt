@@ -2,4 +2,4 @@
 
 project(Server)
 
-add_executable(Server server.cpp)
+add_executable(Server main.cpp)
