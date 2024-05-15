@@ -71,3 +71,7 @@ QString Cacher::getUserName() {
 bool Cacher::deleteFolder(int folderId) {
     return db.deleteFolder(folderId);
 }
+
+bool Cacher::createFolder(int parentId, const QString &folderName) {
+    return db.addFolder(userId, parentId, folderName);
+}

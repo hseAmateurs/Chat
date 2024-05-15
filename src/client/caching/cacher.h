@@ -41,6 +41,8 @@ public:
 
     bool deleteFolder(int folderId);
 
+    bool createFolder(int parentId, const QString &folderName);
+
 private:
     int userId;
     Database db;
