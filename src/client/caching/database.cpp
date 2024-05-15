@@ -140,20 +140,20 @@ bool Database::addFolderChain(int parentUserId, int newUserId, int folderId) {
     QVector<QPair<int, QString>> folders;
     getSubFolders(parentUserId, folderId, true, folders);
 
-    QString queryStr = "INSERT INTO FolderUser (userId, folderId) VALUES ";
-    QStringList valueList;
+    const QString queryStr = "INSERT INTO FolderUser (userId, folderId) "
+                             "SELECT :userId, :folderId "
+                             "WHERE NOT EXISTS (SELECT 1 FROM FolderUser WHERE userId=:userId AND folderId=:folderId)";
 
-    // Формирование списка значений для добавления
     for (const auto &folder: folders) {
-        valueList.append(QString("('%1', %2)").arg(newUserId).arg(folder.first));
-    }
-    queryStr += valueList.join(", ");
+        query.prepare(queryStr);
+        query.bindValue(":userId", newUserId);
+        query.bindValue(":folderId", folder.first);
 
-    if (!query.exec(queryStr)) {
-        qDebug() << "Database:" << "Can't add folder chains" << db.lastError().text();
-        return false;
+        if (!query.exec()) {
+            qDebug() << "Database:" << "Can't add folder chains" << db.lastError().text();
+            return false;
+        }
     }
-
     return true;
 }
 
