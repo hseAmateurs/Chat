@@ -20,15 +20,13 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    int currentStackIndex;
-    QVector<int> currentFolderId;
+    QVector<QPair<int, QWidget *>> currentFolder; // currentFolderId, pageParent
+
+    int getPos() { return currentFolder.last().first; }
 
 public slots:
 
     void open() { show(); };
-
-signals:
-    void deleteSelectedItem();
 
 private slots:
 
@@ -38,9 +36,7 @@ private slots:
 
     void on_addFolderButton_clicked();
 
-    void on_deleteButton_clicked();
-
-    void renderStackLayout(int curDirId);
+    void renderStackLayout(int curDirId, QWidget *parentPage = nullptr);
 };
 
 #endif // MAINWINDOW_H

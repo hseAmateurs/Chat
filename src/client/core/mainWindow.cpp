@@ -10,7 +10,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-        : QMainWindow(parent), ui(new Ui::MainWindow), currentStackIndex(0) {
+        : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
     renderStackLayout(0);
@@ -20,8 +20,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->nameLabel->setFont(font);
 }
 
-void MainWindow::renderStackLayout(int curDirId) {
-    currentFolderId.append(curDirId);
+void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
+    qDebug() << currentFolder;
+    if (currentFolder.isEmpty() || curDirId != getPos())
+        currentFolder.append({curDirId, parentPage});
 
     QVector<QPair<int, QString>> folders;
     Cacher::instance().getSubFolders(curDirId, folders);
@@ -42,17 +44,16 @@ void MainWindow::renderStackLayout(int curDirId) {
 
         auto *folderWidget = new FolderWidget(folder);
         gridLayoutRoot->addWidget(folderWidget, row, column);
-        QObject::connect(folderWidget, &FolderWidget::clicked, [this, folderWidget]() {
-            currentStackIndex++;
+        QObject::connect(folderWidget, &FolderWidget::clicked, [this, folderWidget, page]() {
             qDebug() << "Next folder" << folderWidget->id() << folderWidget->name();
-            renderStackLayout(folderWidget->id());
+            renderStackLayout(folderWidget->id(), page);
         });
         QObject::connect(ui->backButton, &QPushButton::clicked, folderWidget, &FolderWidget::deselect);
-        QObject::connect(this, &MainWindow::deleteSelectedItem, folderWidget, [this, folderWidget]() {
+        QObject::connect(ui->deleteButton, &QPushButton::clicked, folderWidget, [this, folderWidget]() {
             if (!folderWidget->isSelected()) return;
 
             Cacher::instance().deleteFolder(folderWidget->id());
-            renderStackLayout(currentFolderId.last());
+            renderStackLayout(getPos());
         });
 
         column++;
@@ -67,14 +68,13 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_backButton_clicked() {
-    qDebug() << "Clicked" << currentStackIndex;
-    if (!currentStackIndex) return;
-    currentFolderId.pop_back();
-    ui->stackedWidget->setCurrentIndex(--currentStackIndex);
+    if (!getPos()) return;
+    ui->stackedWidget->setCurrentWidget(currentFolder.last().second);
+    currentFolder.pop_back();
 }
 
 void MainWindow::on_onlineButton_clicked() {
-    if (!currentFolderId.last()) {
+    if (!getPos()) {
         QMessageBox::warning(nullptr, "Ошибка!", "Вы не можете добавить пользователей в корень чата. Создайте папку");
         return;
     }
@@ -111,13 +111,17 @@ void MainWindow::on_onlineButton_clicked() {
     dialogBox->exec();
 
     if (!selectedUsersIds.isEmpty())
-        Cacher::instance().addUsersToFolder(selectedUsersIds, currentFolderId.last());
+        Cacher::instance().addUsersToFolder(selectedUsersIds, getPos());
 }
 
 void MainWindow::on_addFolderButton_clicked() {
-
-}
-
-void MainWindow::on_deleteButton_clicked() {
-    emit deleteSelectedItem();
+    bool ok;
+    QString folderName = QInputDialog::getText(this, "Подтверждение действия", "Введите название папки",
+                                               QLineEdit::Normal, "root", &ok);
+    if (ok && !folderName.isEmpty()) {
+        if (Cacher::instance().createFolder(getPos(), folderName))
+            renderStackLayout(getPos());
+        else
+            QMessageBox::critical(nullptr, "Ошибка!", "Невозможно создать папку");
+    }
 }
