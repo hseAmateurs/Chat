@@ -27,11 +27,18 @@ public slots:
 
     void open() { show(); };
 
+signals:
+    void deleteSelectedItem();
+
 private slots:
 
     void on_backButton_clicked();
 
     void on_onlineButton_clicked();
+
+    void on_addFolderButton_clicked();
+
+    void on_deleteButton_clicked();
 
     void renderStackLayout(int curDirId);
 };

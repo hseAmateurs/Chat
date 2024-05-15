@@ -29,13 +29,13 @@ const QString FOLDER = "CREATE TABLE Folder ("
 
 const QString FOLDER_USER = "CREATE TABLE FolderUser ("
                             "userId INTEGER REFERENCES User(id),"
-                            "id INTEGER REFERENCES Folder(id)"
+                            "folderId INTEGER REFERENCES Folder(id)"
                             ");";
 
 const QString MESSAGE = "CREATE TABLE Message ("
                         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                         "userId INTEGER REFERENCES User(id),"
-                        "chatId INTEGER REFERENCES Folder(id),"
+                        "folderId INTEGER REFERENCES Folder(id),"
                         "status INTEGER,"
                         "text TEXT NOT NULL,"
                         "sendTime DATETIME DEFAULT CURRENT_TIMESTAMP"

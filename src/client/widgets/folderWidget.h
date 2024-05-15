@@ -16,6 +16,8 @@ public:
 
     int id() const { return m_folderId; }
 
+    bool isSelected() const { return m_selected; }
+
 public slots:
 
     void deselect();

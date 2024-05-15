@@ -68,7 +68,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Имя:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_7">
+    <widget class="QPushButton" name="deleteButton">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -81,7 +81,7 @@
       <string>Удалить</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_8">
+    <widget class="QPushButton" name="addFolderButton">
      <property name="geometry">
       <rect>
        <x>0</x>

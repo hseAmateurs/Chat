@@ -48,6 +48,12 @@ void MainWindow::renderStackLayout(int curDirId) {
             renderStackLayout(folderWidget->id());
         });
         QObject::connect(ui->backButton, &QPushButton::clicked, folderWidget, &FolderWidget::deselect);
+        QObject::connect(this, &MainWindow::deleteSelectedItem, folderWidget, [this, folderWidget]() {
+            if (!folderWidget->isSelected()) return;
+
+            Cacher::instance().deleteFolder(folderWidget->id());
+            renderStackLayout(currentFolderId.last());
+        });
 
         column++;
     }
@@ -106,4 +112,12 @@ void MainWindow::on_onlineButton_clicked() {
 
     if (!selectedUsersIds.isEmpty())
         Cacher::instance().addUsersToFolder(selectedUsersIds, currentFolderId.last());
+}
+
+void MainWindow::on_addFolderButton_clicked() {
+
+}
+
+void MainWindow::on_deleteButton_clicked() {
+    emit deleteSelectedItem();
 }

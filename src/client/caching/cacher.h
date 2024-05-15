@@ -39,6 +39,8 @@ public:
 
     QString getUserName();
 
+    bool deleteFolder(int folderId);
+
 private:
     int userId;
     Database db;

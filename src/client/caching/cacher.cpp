@@ -67,3 +67,7 @@ QString Cacher::getUserName() {
     if (db.getUserName(userId, name)) return name;
     return "Undefined";
 }
+
+bool Cacher::deleteFolder(int folderId) {
+    return db.deleteFolder(folderId);
+}

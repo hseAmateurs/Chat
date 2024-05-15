@@ -162,7 +162,11 @@ bool Database::multiRemoving(int userId, const QString &tableName, const QVector
     qDebug() << "Database:" << "Deleting folder chain between" << userId << "-"
              << "\nIds:" << folders;
 
-    QString queryStr = "DELETE FROM " + tableName + " WHERE id IN (";
+    QString idName;
+    if (tableName == "Folder") idName = "id";
+    else idName = "folderId";
+
+    QString queryStr = QString("DELETE FROM %1 WHERE %2 IN (").arg(tableName, idName);
     QStringList idList;
     for (const auto &folder: folders)
         idList.append(QString::number(folder.first));
