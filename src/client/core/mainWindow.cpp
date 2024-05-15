@@ -20,9 +20,13 @@ void MainWindow::renderStackLayout(int curDirId) {
     QWidget *page = new QWidget();
     auto *gridLayoutRoot = new QGridLayout(page);
     gridLayoutRoot->setSpacing(cfg::foldersView::space);
+    for (int row = 0; row < cfg::foldersView::rowCount; ++row)
+        gridLayoutRoot->setRowStretch(row, 1);
+    for (int column = 0; column < cfg::foldersView::columnCount; ++column)
+        gridLayoutRoot->setColumnStretch(column, 1);
 
     int column = 0;
-    int row = 0;
+    int row = -1;
     for (const auto &folder: folders) {
         column %= cfg::foldersView::columnCount;
         if (!column) row++;
