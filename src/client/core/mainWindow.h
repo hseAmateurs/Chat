@@ -12,7 +12,7 @@ Q_OBJECT
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    bool getFolders(int userId, int rootId, QVector<QPair<int, QString>> &subFolders) { return true; };
+    bool getUsers(int userId, int rootId, QVector<QPair<int, QString>> &subFolders);
     ~MainWindow();
 
 private:
