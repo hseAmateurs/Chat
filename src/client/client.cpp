@@ -1,22 +1,10 @@
-#include "core/mainWindow.h"
+//
+// Created by Shon on 12.04.2024.
+//
+#include <iostream>
 
-#include <QApplication>
+int main() {
+    std::cout << "Hello from client!\n";
 
-#include "caching/cacher.h"
-#include "core/loginSystem.h"
-
-int main(int argc, char *argv[]) {
-    QApplication a(argc, argv);
-
-    Cacher::instance().loadConfig(QCoreApplication::applicationDirPath());
-
-    MainWindow w;
-
-    w.show();
-
-//    auto *loginWindow = new LoginSystem();
-//    QObject::connect(loginWindow, &LoginSystem::openMainWindow, &w, &MainWindow::open);
-//    loginWindow->show();
-
-    return a.exec();
+    return 0;
 }
