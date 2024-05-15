@@ -33,5 +33,6 @@ void MainWindow::on_pushButton_clicked()
 {
     this->close();
     chat->show();
+    chat->sendMessage(1, 1.25, "Привет!");
 }
 
