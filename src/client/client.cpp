@@ -1,7 +1,6 @@
 #include "core/mainWindow.h"
 
 #include <QApplication>
-#include <QtWidgets>
 
 #include "caching/cacher.h"
 
