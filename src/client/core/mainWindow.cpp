@@ -4,10 +4,10 @@
 #include<QtDebug>
 #include "mainWindow.h"
 #include "ui_mainwindow.h"
-#include "../settings/config.h"
+#include "../utils/config.h"
 #include "../widgets/folderWidget.h"
 #include "../widgets/userWidget.h"
-#include "../caching/cacher.h"
+#include "../utils/cacher.h"
 
 
 MainWindow::MainWindow(QWidget *parent)

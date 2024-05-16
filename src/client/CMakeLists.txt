@@ -20,16 +20,13 @@ set(SOURCES
 
 )
 
-set(SETTINGS
-        settings/config.h
-)
-
-set(CACHING
-        caching/database.cpp
-        caching/database.h
-        caching/scripts/tables.h
-        caching/cacher.cpp
-        caching/cacher.h
+set(UTILS
+        utils/config.h
+        utils/database.cpp
+        utils/database.h
+        utils/scripts/tables.h
+        utils/cacher.cpp
+        utils/cacher.h
 )
 
 set(UI_FILES
@@ -47,8 +44,7 @@ set(WIDGETS
 
 add_executable(Client
         ${SOURCES}
-        ${SETTINGS}
-        ${CACHING}
+        ${UTILS}
         ${UI_FILES}
         ${WIDGETS}
         textures/res.qrc

@@ -15,7 +15,7 @@
 #include <QString>
 #include <QDebug>
 
-#include "../settings/config.h"
+#include "config.h"
 
 class Database {
 public:
