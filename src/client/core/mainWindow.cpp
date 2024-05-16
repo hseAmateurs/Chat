@@ -13,11 +13,6 @@ MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    renderStackLayout(0);
-    ui->nameLabel->setText("Имя: " + Cacher::instance().getUserName());
-    QFont font;
-    font.setPointSize(12);
-    ui->nameLabel->setFont(font);
 }
 
 void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
@@ -124,4 +119,14 @@ void MainWindow::on_addFolderButton_clicked() {
         else
             QMessageBox::critical(nullptr, "Ошибка!", "Невозможно создать папку");
     }
+}
+
+void MainWindow::open() {
+    renderStackLayout(0);
+    ui->nameLabel->setText("Имя: " + Cacher::instance().getUserName());
+    QFont font;
+    font.setPointSize(12);
+    ui->nameLabel->setFont(font);
+
+    show();
 }

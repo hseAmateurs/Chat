@@ -39,8 +39,10 @@ set(UI_FILES
 )
 
 set(WIDGETS
-        widgets/folderWidget.cpp
+        widgets/widget.cpp
+        widgets/widget.h
         widgets/folderWidget.h
+        widgets/userWidget.h
 )
 
 add_executable(Client

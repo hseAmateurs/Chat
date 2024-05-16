@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
 
     MainWindow w;
 
-    w.show();
+    w.open();
 
 //    auto *loginWindow = new LoginSystem();
 //    QObject::connect(loginWindow, &LoginSystem::openMainWindow, &w, &MainWindow::open);

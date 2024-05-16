@@ -24,7 +24,7 @@ private:
 
 public slots:
 
-    void open() { show(); };
+    void open();
 
 private slots:
 
