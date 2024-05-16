@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "chatWindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,6 +18,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    ChatWindow *chatWindow;
 
     QVector<QPair<int, QWidget *>> currentFolder; // currentFolderId, pageParent
 
@@ -35,6 +37,8 @@ private slots:
     void on_addFolderButton_clicked();
 
     void renderStackLayout(int curDirId, QWidget *parentPage = nullptr);
+
+    void openChat();
 };
 
 #endif // MAINWINDOW_H

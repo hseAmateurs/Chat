@@ -14,6 +14,13 @@ MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
+    QObject::connect(ui->chatButton, &QPushButton::clicked, this, &MainWindow::openChat);
+}
+
+void MainWindow::openChat() {
+    chatWindow = new ChatWindow();
+    ui->stackedWidget->addWidget(chatWindow);
+    ui->stackedWidget->setCurrentWidget(chatWindow);
 }
 
 void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
@@ -64,9 +71,7 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
 
         auto *userWidget = new UserWidget(user);
         gridLayoutRoot->addWidget(userWidget, row, column);
-        QObject::connect(userWidget, &FolderWidget::clicked, [userWidget]() {
-            qDebug() << "Open personal chat with" << userWidget->id() << userWidget->name();
-        });
+        QObject::connect(userWidget, &FolderWidget::clicked, this, &MainWindow::openChat);
         QObject::connect(ui->backButton, &QPushButton::clicked, userWidget, &FolderWidget::deselect);
         QObject::connect(ui->deleteButton, &QPushButton::clicked, userWidget, [this, userWidget]() {
             if (!userWidget->isSelected()) return;
@@ -155,4 +160,6 @@ void MainWindow::open() {
     ui->nameLabel->setFont(font);
 
     show();
+
+
 }

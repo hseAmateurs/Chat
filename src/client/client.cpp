@@ -4,11 +4,15 @@
 
 #include "utils/cacher.h"
 #include "core/loginSystem.h"
+#include "core/chatWindow.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
     Cacher::instance().loadConfig(QCoreApplication::applicationDirPath());
+
+//    ChatWindow chat;
+//    chat.show();
 
     MainWindow w;
 
