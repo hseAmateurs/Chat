@@ -12,11 +12,16 @@ MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    QObject::connect(ui->chatButton, &QPushButton::clicked, [this]() { openChat(getPos()); });
+    QObject::connect(ui->chatButton, &QPushButton::clicked, [this]() {
+        if (!getPos()) {
+            QMessageBox::warning(nullptr, "Предупреждение!",
+                                 "Вы не можете написать в корень чата. Перейдите в любую папку");
+        }
+    });
 }
 
-void MainWindow::openChat(int chatId) {
-    chatWindow = new ChatWindow(chatId, this);
+void MainWindow::openChat(int chatId, const QString &folderName) {
+    chatWindow = new ChatWindow(chatId, folderName, this);
     chatWindow->setModal(true);
     chatWindow->open();
 }
@@ -57,6 +62,10 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
             Cacher::instance().deleteFolder(folderWidget->id());
             renderStackLayout(getPos());
         });
+        QObject::connect(ui->chatButton, &QPushButton::clicked, [this, folderWidget]() {
+            if (getPos() == folderWidget->id())
+                openChat(folderWidget->id(), folderWidget->name());
+        });
 
         column++;
     }
@@ -69,7 +78,8 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
 
         auto *userWidget = new UserWidget(user);
         gridLayoutRoot->addWidget(userWidget, row, column);
-        QObject::connect(userWidget, &FolderWidget::clicked, [this, user]() { openChat(user.first); });
+        QObject::connect(userWidget, &FolderWidget::clicked,
+                         [this, userWidget]() { openChat(userWidget->id(), userWidget->name()); });
         QObject::connect(ui->backButton, &QPushButton::clicked, userWidget, &FolderWidget::deselect);
         QObject::connect(ui->deleteButton, &QPushButton::clicked, userWidget, [this, userWidget]() {
             if (!userWidget->isSelected()) return;
@@ -97,7 +107,8 @@ void MainWindow::on_backButton_clicked() {
 
 void MainWindow::on_onlineButton_clicked() {
     if (!getPos()) {
-        QMessageBox::warning(nullptr, "Ошибка!", "Вы не можете добавить пользователей в корень чата. Создайте папку");
+        QMessageBox::warning(nullptr, "Предупреждение!",
+                             "Вы не можете добавить пользователей в корень чата. Создайте папку");
         return;
     }
 

@@ -24,7 +24,7 @@ private:
 
     int getPos() { return currentFolder.last().first; }
 
-    void openChat(int chatId);
+    void openChat(int chatId, const QString &folderName);
 
 public slots:
 

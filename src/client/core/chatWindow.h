@@ -18,7 +18,7 @@ class ChatWindow : public QDialog {
 Q_OBJECT
 
 public:
-    explicit ChatWindow(int folderId, QWidget *parent = nullptr);
+    explicit ChatWindow(int folderId, const QString &folderName, QWidget *parent = nullptr);
     void sendMessage(int from, double time, std::string text); // function, which sends a message on the screen
     ~ChatWindow();
 

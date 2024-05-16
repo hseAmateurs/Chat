@@ -6,10 +6,11 @@
 #include <QFont>
 #include <QScrollBar>
 
-ChatWindow::ChatWindow(int folderId, QWidget *parent) :
+ChatWindow::ChatWindow(int folderId, const QString &folderName, QWidget *parent) :
         QDialog(parent), folderId(folderId),
         ui(new Ui::ChatWindow) {
     ui->setupUi(this);
+    ui->label->setText(folderName);
 
     lay = new QVBoxLayout();
     lay->setAlignment(Qt::AlignTop);
