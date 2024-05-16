@@ -129,8 +129,10 @@ void MainWindow::on_onlineButton_clicked() {
 
     dialogBox->exec();
 
-    if (!selectedUsersIds.isEmpty())
+    if (!selectedUsersIds.isEmpty()) {
         Cacher::instance().addUsersToFolder(selectedUsersIds, getPos());
+        renderStackLayout(getPos());
+    }
 }
 
 void MainWindow::on_addFolderButton_clicked() {
