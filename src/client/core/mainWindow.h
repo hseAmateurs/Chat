@@ -24,6 +24,8 @@ private:
 
     int getPos() { return currentFolder.last().first; }
 
+    void openChat(int chatId);
+
 public slots:
 
     void open();
@@ -37,8 +39,6 @@ private slots:
     void on_addFolderButton_clicked();
 
     void renderStackLayout(int curDirId, QWidget *parentPage = nullptr);
-
-    void openChat();
 };
 
 #endif // MAINWINDOW_H

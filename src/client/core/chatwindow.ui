@@ -45,7 +45,7 @@
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(125, 212, 240);
-color: rgb(125, 212, 240);</string>
+     color: rgb(125, 212, 240);</string>
    </property>
    <property name="lineWidth">
     <number>29</number>
@@ -68,14 +68,14 @@ color: rgb(125, 212, 240);</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(125, 212, 240);
-border: none;</string>
+     border: none;</string>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>../icon_images/strelka.png</normaloff>../icon_images/strelka.png</iconset>
+    <iconset resource="../textures/res.qrc">
+     <normaloff>:/images/arrow.png</normaloff>:/images/arrow.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -103,7 +103,7 @@ border: none;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(125, 212, 240);</string>
+     background-color: rgb(125, 212, 240);</string>
    </property>
    <property name="text">
     <string>Name of the person or group</string>
@@ -128,7 +128,7 @@ background-color: rgb(125, 212, 240);</string>
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>../icon_images/dialog.png</pixmap>
+    <pixmap resource="../textures/res.qrc">:/images/dialog.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -150,8 +150,8 @@ background-color: rgb(125, 212, 240);</string>
     <string/>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>../icon_images/send.png</normaloff>../icon_images/send.png</iconset>
+    <iconset resource="../textures/res.qrc">
+     <normaloff>:/images/send.png</normaloff>:/images/send.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -208,6 +208,8 @@ background-color: rgb(125, 212, 240);</string>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../textures/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

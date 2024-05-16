@@ -1,14 +1,16 @@
 #include "chatWindow.h"
-#include "ui/ui_chatwindow.h"
+#include "ui_chatwindow.h"
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QFont>
 #include <QScrollBar>
 
-ChatWindow::ChatWindow(QWidget *parent) :
-        QWidget(parent),
+ChatWindow::ChatWindow(int folderId, QWidget *parent) :
+        QDialog(parent), folderId(folderId),
         ui(new Ui::ChatWindow) {
     ui->setupUi(this);
+
     lay = new QVBoxLayout();
     lay->setAlignment(Qt::AlignTop);
     ui->frame->setLayout(lay);
@@ -20,13 +22,16 @@ ChatWindow::ChatWindow(QWidget *parent) :
                           "}");
     scroll->setWidget(ui->frame);
     scroll->setGeometry(9, 79, 481, 401);
+    scroll->setWidgetResizable(true);
 }
 
 
-void ChatWindow::sendMessage(int from, double time, std::string text) {
+void ChatWindow::sendMessage(int from, double time, std::string text)
+{
     if (from == 1) // a message is from server for example
     {
-        if (!text.empty()) {
+        if (!text.empty())
+        {
             QString message = QString::fromUtf8(text.c_str());
             QLabel *answer = new QLabel(message);
             answer->setContentsMargins(5, 5, 5, 5);
@@ -54,7 +59,8 @@ void ChatWindow::sendMessage(int from, double time, std::string text) {
     }
     else // a message is from client
     {
-        if (!text.empty()) {
+        if (!text.empty())
+        {
             QString message = QString::fromUtf8(text.c_str());
             QLabel *label = new QLabel(message);
             label->setContentsMargins(5, 5, 5, 5);
@@ -84,13 +90,13 @@ void ChatWindow::sendMessage(int from, double time, std::string text) {
     }
 }
 
-ChatWindow::~ChatWindow() {
+ChatWindow::~ChatWindow()
+{
     delete ui;
 }
 
 void ChatWindow::on_pushButton_2_clicked() {
     this->close(); // close the chatting window
-    emit openMainWindow(); // send a signal from the chatting window to the main window
 }
 
 
