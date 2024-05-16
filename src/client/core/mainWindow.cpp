@@ -6,6 +6,7 @@
 #include "ui_mainwindow.h"
 #include "../settings/config.h"
 #include "../widgets/folderWidget.h"
+#include "../widgets/userWidget.h"
 #include "../caching/cacher.h"
 
 
@@ -33,6 +34,7 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
 
     int column = 0;
     int row = -1;
+
     for (const auto &folder: folders) {
         column %= cfg::foldersView::columnCount;
         if (!column) row++;
@@ -48,6 +50,28 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
             if (!folderWidget->isSelected()) return;
 
             Cacher::instance().deleteFolder(folderWidget->id());
+            renderStackLayout(getPos());
+        });
+
+        column++;
+    }
+
+    QVector<QPair<int, QString>> users;
+    Cacher::instance().getUserOwners(curDirId, users);
+    for (const auto &user: users) {
+        column %= cfg::foldersView::columnCount;
+        if (!column) row++;
+
+        auto *userWidget = new UserWidget(user);
+        gridLayoutRoot->addWidget(userWidget, row, column);
+        QObject::connect(userWidget, &FolderWidget::clicked, [userWidget]() {
+            qDebug() << "Open personal chat with" << userWidget->id() << userWidget->name();
+        });
+        QObject::connect(ui->backButton, &QPushButton::clicked, userWidget, &FolderWidget::deselect);
+        QObject::connect(ui->deleteButton, &QPushButton::clicked, userWidget, [this, userWidget]() {
+            if (!userWidget->isSelected()) return;
+
+            Cacher::instance().deleteUser(userWidget->id(), getPos());
             renderStackLayout(getPos());
         });
 

@@ -31,6 +31,8 @@ public:
 
     bool getSubFolders(int currentId, QVector<QPair<int, QString>> &subFolders);
 
+    bool getUserOwners(int currentId, QVector<QPair<int, QString>> &users);
+
     bool getOnlineUsers(QVector<QPair<int, QString>> &users);
 
     bool addUsersToFolder(const QVector<int> &invitedUsersIds, int folderId);
@@ -42,6 +44,8 @@ public:
     bool deleteFolder(int folderId);
 
     bool createFolder(int parentId, const QString &folderName);
+
+    bool deleteUser(int userId, int folderId);
 
 private:
     int userId;

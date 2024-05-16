@@ -124,15 +124,6 @@ bool Database::addFolder(const int userId, const int parentId, const QString &na
     return true;
 }
 
-// Удаляет папку для всех (связи между пользователями и папками, сами папки + сообщения в них)
-bool Database::deleteFolder(int folderId) {
-    QVector<QPair<int, QString>> folders;
-    getSubFolders(-1, folderId, true, folders);
-    return multiRemoving(-1, "FolderUser", folders)
-           && multiRemoving(-1, "Message", folders)
-           && multiRemoving(-1, "Folder", folders);
-}
-
 // При добавлении связи с папкой с подпапками тоже устанавливается связь
 bool Database::addFolderChain(int parentUserId, int newUserId, int folderId) {
     qDebug() << "Database:" << "Adding folder chain between" << newUserId << "-" << folderId << "for" << parentUserId;
@@ -305,14 +296,51 @@ bool Database::getOnlineUsers(QVector<QPair<int, QString>> &users) {
 bool Database::getUserName(int userId, QString &username) {
     qDebug() << "Database:" << "Getting username for" << userId;
 
-    query.prepare("SELECT name FROM Person WHERE userId=:userId");
-    query.bindValue(":userId", userId);
+    QSqlQuery t_query;
+    t_query.prepare("SELECT name FROM Person WHERE userId=:userId");
+    t_query.bindValue(":userId", userId);
 
-    if (!query.exec()) {
+    if (!t_query.exec()) {
         qDebug() << "Database:" << "Can't get username" << db.lastError();
         return false;
     }
 
-    if (query.next()) username = query.value("name").toString();
+    if (t_query.next()) username = t_query.value("name").toString();
+    return true;
+}
+
+bool Database::getRootFolderUsers(int currentDirId, QVector<QPair<int, QString>> &users) {
+    qDebug() << "Getting rootFolder users for folder" << currentDirId;
+
+    query.prepare("SELECT parentId FROM Folder WHERE id = :folderId");
+    query.bindValue(":folderId", currentDirId);
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't get parentFolderId" << db.lastError().text();
+        return false;
+    }
+    if (!query.next()) return true;
+
+    int parentFolderId = query.value("parentId").toInt();
+    qDebug() << "FolderParentID is" << parentFolderId;
+    query.prepare("SELECT fu.userId "
+                  "FROM FolderUser fu WHERE fu.userId NOT IN "
+                  "(SELECT userId FROM FolderUser WHERE folderId = :parentId) "
+                  "AND fu.folderId = :currentId");
+
+    query.bindValue(":currentId", currentDirId);
+    query.bindValue(":parentId", parentFolderId);
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't get parentFolderId" << db.lastError().text();
+        return false;
+    }
+
+    while (query.next()) {
+        int id = query.value("userId").toInt();
+        QString name;
+        if (!getUserName(id, name))
+            return false;
+        users.append({id, name});
+    }
     return true;
 }

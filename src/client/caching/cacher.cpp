@@ -36,6 +36,18 @@ bool Cacher::getSubFolders(int currentId, QVector<QPair<int, QString>> &subFolde
     return db.getSubFolders(userId, currentId, false, subFolders);
 }
 
+bool Cacher::getUserOwners(int currentId, QVector<QPair<int, QString>> &users) {
+    bool res = db.getRootFolderUsers(currentId, users);
+    const size_t size = users.size();
+    for (int i = 0; i < size; ++i) {
+        if (users[i].first == userId) {
+            users.remove(i);
+            break;
+        }
+    }
+    return res;
+}
+
 bool Cacher::getOnlineUsers(QVector<QPair<int, QString>> &users) {
     bool res = db.getOnlineUsers(users);
     const size_t size = users.size();
@@ -69,9 +81,20 @@ QString Cacher::getUserName() {
 }
 
 bool Cacher::deleteFolder(int folderId) {
-    return db.deleteFolder(folderId);
+    QVector<QPair<int, QString>> folders;
+    db.getSubFolders(-1, folderId, true, folders);
+    return db.multiRemoving(-1, "FolderUser", folders)
+           && db.multiRemoving(-1, "Message", folders)
+           && db.multiRemoving(-1, "Folder", folders);
 }
 
 bool Cacher::createFolder(int parentId, const QString &folderName) {
     return db.addFolder(userId, parentId, folderName);
+}
+
+bool Cacher::deleteUser(int userId, int folderId) {
+    QVector<QPair<int, QString>> folders;
+    db.getSubFolders(userId, folderId, true, folders);
+    return db.multiRemoving(userId, "FolderUser", folders)
+           && db.multiRemoving(userId, "Message", folders);
 }
