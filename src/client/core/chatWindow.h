@@ -7,6 +7,7 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QKeyEvent>
+#include "../utils/cacher.h"
 //#include "textarea.h"
 
 namespace Ui {
@@ -17,7 +18,7 @@ class ChatWindow : public QDialog {
 Q_OBJECT
 
 public:
-    explicit ChatWindow(QWidget *parent = nullptr);
+    explicit ChatWindow(int folderId, QWidget *parent = nullptr);
     void sendMessage(int from, double time, std::string text); // function, which sends a message on the screen
     ~ChatWindow();
 
@@ -27,11 +28,8 @@ private:
     QHBoxLayout *hlay1;
     QHBoxLayout *hlay2;
     QScrollArea *scroll;
+    int folderId;
     //TextArea *textArea;
-
-signals:
-
-    void openMainWindow(); // create a signal, which opens the main window
 
 private slots:
 

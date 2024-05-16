@@ -1,46 +1,18 @@
 //
-// Created by Shon on 15.05.2024.
+// Created by Shon on 16.05.2024.
 //
 
 #ifndef CHAT_FOLDERWIDGET_H
 #define CHAT_FOLDERWIDGET_H
 
-#include <QtWidgets>
+#include "widget.h"
 
-class FolderWidget : public QWidget {
+class FolderWidget : public Widget {
 Q_OBJECT
 public:
-    explicit FolderWidget(const QPair<int, QString> &folder, QWidget *parent = nullptr);
+    explicit FolderWidget(const QPair<int, QString> &info, QWidget *parent = nullptr)
+            : Widget(info, ":/images/folder.ico", parent) { };
 
-    QString name() const { return m_folderName; }
-
-    int id() const { return m_folderId; }
-
-    bool isSelected() const { return m_selected; }
-
-public slots:
-
-    void deselect();
-
-protected:
-    void mouseDoubleClickEvent(QMouseEvent *event) override;
-
-    void mousePressEvent(QMouseEvent *event) override;
-
-signals:
-
-    void clicked();
-
-private:
-    QString m_folderName;
-    bool m_selected;
-    int m_folderId;
-
-private:
-    void setBackgroundColor(const QColor &color);
-
-    void handleClick();
 };
-
 
 #endif //CHAT_FOLDERWIDGET_H

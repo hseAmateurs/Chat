@@ -4,20 +4,23 @@
 #include<QtDebug>
 #include "mainWindow.h"
 #include "ui_mainwindow.h"
-#include "../settings/config.h"
+#include "../utils/config.h"
 #include "../widgets/folderWidget.h"
-#include "../caching/cacher.h"
+#include "../widgets/userWidget.h"
+#include "../utils/cacher.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    renderStackLayout(0);
-    ui->nameLabel->setText("Имя: " + Cacher::instance().getUserName());
-    QFont font;
-    font.setPointSize(12);
-    ui->nameLabel->setFont(font);
+    QObject::connect(ui->chatButton, &QPushButton::clicked, [this]() { openChat(getPos()); });
+}
+
+void MainWindow::openChat(int chatId) {
+    chatWindow = new ChatWindow(chatId, this);
+    chatWindow->setModal(true);
+    chatWindow->open();
 }
 
 void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
@@ -38,6 +41,7 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
 
     int column = 0;
     int row = -1;
+
     for (const auto &folder: folders) {
         column %= cfg::foldersView::columnCount;
         if (!column) row++;
@@ -53,6 +57,26 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
             if (!folderWidget->isSelected()) return;
 
             Cacher::instance().deleteFolder(folderWidget->id());
+            renderStackLayout(getPos());
+        });
+
+        column++;
+    }
+
+    QVector<QPair<int, QString>> users;
+    Cacher::instance().getUserOwners(curDirId, users);
+    for (const auto &user: users) {
+        column %= cfg::foldersView::columnCount;
+        if (!column) row++;
+
+        auto *userWidget = new UserWidget(user);
+        gridLayoutRoot->addWidget(userWidget, row, column);
+        QObject::connect(userWidget, &FolderWidget::clicked, [this, user]() { openChat(user.first); });
+        QObject::connect(ui->backButton, &QPushButton::clicked, userWidget, &FolderWidget::deselect);
+        QObject::connect(ui->deleteButton, &QPushButton::clicked, userWidget, [this, userWidget]() {
+            if (!userWidget->isSelected()) return;
+
+            Cacher::instance().deleteUser(userWidget->id(), getPos());
             renderStackLayout(getPos());
         });
 
@@ -110,8 +134,10 @@ void MainWindow::on_onlineButton_clicked() {
 
     dialogBox->exec();
 
-    if (!selectedUsersIds.isEmpty())
+    if (!selectedUsersIds.isEmpty()) {
         Cacher::instance().addUsersToFolder(selectedUsersIds, getPos());
+        renderStackLayout(getPos());
+    }
 }
 
 void MainWindow::on_addFolderButton_clicked() {
@@ -124,4 +150,16 @@ void MainWindow::on_addFolderButton_clicked() {
         else
             QMessageBox::critical(nullptr, "Ошибка!", "Невозможно создать папку");
     }
+}
+
+void MainWindow::open() {
+    renderStackLayout(0);
+    ui->nameLabel->setText("Имя: " + Cacher::instance().getUserName());
+    QFont font;
+    font.setPointSize(12);
+    ui->nameLabel->setFont(font);
+
+    show();
+
+
 }

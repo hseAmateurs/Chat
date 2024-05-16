@@ -15,7 +15,7 @@
 #include <QString>
 #include <QDebug>
 
-#include "../settings/config.h"
+#include "config.h"
 
 class Database {
 public:
@@ -52,13 +52,14 @@ public:
 
     bool addFolder(int userId, int parentId, const QString &name);
 
-    bool deleteFolder(int folderId);
-
     // Добавляет все связи (включая связи с подпапками)
     bool addFolderChain(int parentUserId, int newUserId, int folderId);
 
     // Удаляет все связи (включая связи с подпапками)/сообщения/папки, если userId == -1, то userId не учитывается
     bool multiRemoving(int userId, const QString &tableName, const QVector<QPair<int, QString>> &folders);
+
+    // Возвращает пользователей, для которых папка явялется корневой
+    bool getRootFolderUsers(int currentDirId, QVector<QPair<int, QString>> &users);
 
 
 private:

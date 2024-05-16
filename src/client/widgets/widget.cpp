@@ -6,19 +6,19 @@
 
 #include <QVBoxLayout>
 #include <QLabel>
-#include "folderWidget.h"
+#include "widget.h"
 
-FolderWidget::FolderWidget(const QPair<int, QString> &folder, QWidget *parent)
-        : QWidget(parent), m_folderName(folder.second), m_selected(false), m_folderId(folder.first) {
+Widget::Widget(const QPair<int, QString> &info, const QString &icon, QWidget *parent)
+        : QWidget(parent), m_name(info.second), m_selected(false), m_id(info.first) {
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     // Иконка папки
     QLabel *iconLabel = new QLabel(this);
-    iconLabel->setPixmap(QPixmap(":/images/folder.ico")); // Установите путь к иконке папки
+    iconLabel->setPixmap(QPixmap(icon)); // Установите путь к иконке папки
     layout->addWidget(iconLabel, 0, Qt::AlignHCenter);
 
     // Текст с именем папки
-    QLabel *textLabel = new QLabel(m_folderName, this);
+    QLabel *textLabel = new QLabel(m_name, this);
     textLabel->setAlignment(Qt::AlignHCenter);
     layout->addWidget(textLabel, 0, Qt::AlignHCenter);
 
@@ -26,10 +26,10 @@ FolderWidget::FolderWidget(const QPair<int, QString> &folder, QWidget *parent)
     setMinimumSize(120, 120);
 
     // Соединяем сигналы и слоты для обработки щелчков мыши
-    connect(this, &FolderWidget::clicked, this, &FolderWidget::handleClick);
+    QObject::connect(this, &Widget::clicked, this, &Widget::handleClick);
 }
 
-void FolderWidget::mouseDoubleClickEvent(QMouseEvent *event) {
+void Widget::mouseDoubleClickEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         handleClick();
         emit clicked();
@@ -37,24 +37,24 @@ void FolderWidget::mouseDoubleClickEvent(QMouseEvent *event) {
     QWidget::mouseDoubleClickEvent(event);
 }
 
-void FolderWidget::mousePressEvent(QMouseEvent *event) {
+void Widget::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton)
         handleClick();
     QWidget::mousePressEvent(event);
 }
 
-void FolderWidget::handleClick() {
+void Widget::handleClick() {
     setBackgroundColor(m_selected ? QColor("#f0f0f0") : Qt::blue);
     m_selected = !m_selected;
 }
 
-void FolderWidget::setBackgroundColor(const QColor &color) {
+void Widget::setBackgroundColor(const QColor &color) {
     QPalette pal = palette();
     pal.setColor(QPalette::Background, color);
     setAutoFillBackground(true);
     setPalette(pal);
 }
 
-void FolderWidget::deselect() {
+void Widget::deselect() {
     if (m_selected) handleClick();
 }

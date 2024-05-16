@@ -1,13 +1,13 @@
 #include "chatWindow.h"
-#include "ui/ui_chatwindow.h"
+#include "ui_chatwindow.h"
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFont>
 #include <QScrollBar>
 
-ChatWindow::ChatWindow(QWidget *parent) :
-        QDialog(parent),
+ChatWindow::ChatWindow(int folderId, QWidget *parent) :
+        QDialog(parent), folderId(folderId),
         ui(new Ui::ChatWindow) {
     ui->setupUi(this);
 
@@ -97,7 +97,6 @@ ChatWindow::~ChatWindow()
 
 void ChatWindow::on_pushButton_2_clicked() {
     this->close(); // close the chatting window
-    emit openMainWindow(); // send a signal from the chatting window to the main window
 }
 
 
