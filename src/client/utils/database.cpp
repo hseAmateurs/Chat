@@ -91,10 +91,27 @@ bool Database::addAuth(const QString &login, const QString &pass, int &userId) {
     return true;
 }
 
+int Database::getNextFolderId() {
+    qDebug() << "Getting next folder id";
+    QSqlQuery t_query;
+    if (!t_query.exec("SELECT MAX(id) FROM Folder")) {
+        qDebug() << "Database:" << "Can't get max folder id" << db.lastError().text();
+        return -1;
+    }
+    if(!t_query.next()) {
+        qDebug() << "No query";
+        return -1;
+    }
+    return t_query.value(0).toInt() + 1;
+}
+
 bool Database::addFolder(const int userId, const int parentId, const QString &name) {
     qDebug() << "Database:" << "Adding folder for" << userId << "-" << name << "-" << parentId;
 
-    query.prepare("INSERT INTO Folder (parentId, name) VALUES (:parentId, :name)");
+
+    int id = getNextFolderId();
+    query.prepare("INSERT INTO Folder (id, parentId, name) VALUES (:id, :parentId, :name)");
+    query.bindValue(":id", id);
     query.bindValue(":parentId", parentId);
     query.bindValue(":name", name);
 
@@ -103,11 +120,7 @@ bool Database::addFolder(const int userId, const int parentId, const QString &na
         return false;
     }
 
-    if (!query.lastInsertId().isValid()) {
-        qDebug() << "Database:" << "Can't get new folder id" << db.lastError().text();
-        return false;
-    }
-    addFolderChain(userId, userId, query.lastInsertId().toInt());
+    addFolderChain(userId, userId, id);
 
     return true;
 }
@@ -133,6 +146,47 @@ bool Database::addFolderChain(int parentUserId, int newUserId, int folderId) {
             return false;
         }
     }
+
+    query.prepare("SELECT parentId, name FROM Folder WHERE id = :folderId");
+    query.bindValue(":folderId", folderId);
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't get parentFolderId" << db.lastError().text();
+        return false;
+    }
+
+    if (!query.next()) return false;
+
+    int parentFolderId = -1; // > 1000 skip
+    QString name;
+    do {
+        if (query.value("parentId").toInt() > 1000) continue;
+        parentFolderId = query.value("parentId").toInt();
+        name = query.value("name").toString();
+    } while (query.next());
+    qDebug() << parentFolderId;
+    if (parentFolderId == -1) return true;
+
+    query.prepare("SELECT * FROM FolderUser WHERE userId = :userId AND folderId=:folderId");
+    query.bindValue(":folderId", parentFolderId);
+    query.bindValue(":userId", newUserId);
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't get existing chains" << db.lastError().text();
+        return false;
+    }
+
+    if(query.next()) return true;
+
+    query.prepare("INSERT INTO Folder (id, parentId, name) VALUES (:id, :parentId, :name)");
+    query.bindValue(":id", folderId);
+    query.bindValue(":parentId", newUserId + cfg::ROOT_OFFSET);
+    query.bindValue(":name", name);
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't insert new chain" << db.lastError().text();
+        return false;
+    }
+
     return true;
 }
 
@@ -315,8 +369,15 @@ bool Database::getRootFolderUsers(int currentDirId, QVector<QPair<int, QString>>
     }
     if (!query.next()) return true;
 
-    int parentFolderId = query.value("parentId").toInt();
+    int parentFolderId = -1; // > 1000 skip
+    do {
+        if (query.value("parentId").toInt() > 1000) continue;
+        parentFolderId = query.value("parentId").toInt();
+    } while (query.next());
+
     qDebug() << "FolderParentID is" << parentFolderId;
+    if (parentFolderId == -1) return false;
+
     query.prepare("SELECT fu.userId "
                   "FROM FolderUser fu WHERE fu.userId NOT IN "
                   "(SELECT userId FROM FolderUser WHERE folderId = :parentId) "
@@ -338,4 +399,19 @@ bool Database::getRootFolderUsers(int currentDirId, QVector<QPair<int, QString>>
         users.append({id, name});
     }
     return true;
+}
+
+bool Database::isChainExist(int userId, int folderId) {
+    qDebug() << "Database:" << "Checking chain between" << userId << "and" << folderId;
+
+    query.prepare("SELECT * FROM FolderUser WHERE userId=:userId AND folderId=:folderId");
+    query.bindValue(":userId", userId);
+    query.bindValue(":folderId", folderId);
+
+    if (!query.exec()) {
+        qDebug() << "Database:" << "Can't check chain" << db.lastError();
+        return false;
+    }
+
+    return query.next();
 }

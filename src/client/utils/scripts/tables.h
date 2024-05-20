@@ -22,7 +22,7 @@ const QString PERSON = "CREATE TABLE Person ("
                        ");";
 
 const QString FOLDER = "CREATE TABLE Folder ("
-                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                       "id INTEGER,"
                        "parentId INTEGER REFERENCES Folder(id),"
                        "name TEXT NOT NULL"
                        ");";

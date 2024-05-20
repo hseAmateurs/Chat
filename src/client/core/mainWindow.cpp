@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     QObject::connect(ui->chatButton, &QPushButton::clicked, [this]() {
-        if (!getPos()) {
+        if (getPos() == rootId) {
             QMessageBox::warning(nullptr, "Предупреждение!",
                                  "Вы не можете написать в корень чата. Перейдите в любую папку");
         }
@@ -32,10 +32,17 @@ void MainWindow::openChat(int chatId, const QString &folderName) {
 void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
     qDebug() << currentFolder;
     if (currentFolder.isEmpty() || curDirId != getPos())
-        currentFolder.append({curDirId, parentPage});
+        currentFolder.append(curDirId);
 
     QVector<QPair<int, QString>> folders;
-    Cacher::instance().getSubFolders(curDirId, folders);
+    if (curDirId != rootId && !Cacher::instance().isChainExist(curDirId)) {
+        QMessageBox::warning(nullptr, "Внимание!",
+                             "Вы не имеета доступа к данной папке. Опускаю вас в корень");
+        currentFolder.clear();
+        renderStackLayout(rootId);
+    }
+    bool res = Cacher::instance().getSubFolders(curDirId, folders);
+    qDebug() << res;
 
     QWidget *page = new QWidget();
     auto *gridLayoutRoot = new QGridLayout(page);
@@ -66,8 +73,8 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
             renderStackLayout(getPos());
             emit sayHello();
         });
-        QObject::connect(ui->chatButton, &QPushButton::clicked, [this, folderWidget]() {
-            if (getPos() == folderWidget->id())
+        QObject::connect(ui->chatButton, &QPushButton::clicked, folderWidget, [this, folderWidget]() {
+            if (getPos() == folderWidget->id() && !isChatMode)
                 openChat(folderWidget->id(), folderWidget->name());
         });
 
@@ -106,14 +113,18 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_backButton_clicked() {
-    if (!getPos()) return;
-    ui->stackedWidget->setCurrentWidget(currentFolder.last().second);
+    if (getPos() == rootId) return;
+    QWidget *currentWidget = ui->stackedWidget->currentWidget();
+    if (currentWidget) {
+        ui->stackedWidget->removeWidget(currentWidget);
+        delete currentWidget;
+    }
     currentFolder.pop_back();
     update();
 }
 
 void MainWindow::on_onlineButton_clicked() {
-    if (!getPos()) {
+    if (getPos() == rootId) {
         QMessageBox::warning(nullptr, "Предупреждение!",
                              "Вы не можете добавить пользователей в корень чата. Создайте папку");
         return;
@@ -172,7 +183,9 @@ void MainWindow::on_addFolderButton_clicked() {
 }
 
 void MainWindow::open() {
-    renderStackLayout(0);
+    rootId = cfg::ROOT_OFFSET + Cacher::instance().getUserId();
+
+    renderStackLayout(rootId);
     ui->nameLabel->setText("Имя: " + Cacher::instance().getUserName());
     QFont font;
     font.setPointSize(12);

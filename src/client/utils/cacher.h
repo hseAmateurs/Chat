@@ -61,6 +61,8 @@ public:
 
     int getUserId() { return userId; }
 
+    bool isChainExist(int folderId) { return db.isChainExist(userId, folderId); }
+
 private:
     int userId;
     Database db;

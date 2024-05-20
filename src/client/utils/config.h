@@ -23,6 +23,8 @@ namespace cfg {
         const int columnCount = 4;
         const int space = 20;
     }
+
+    const int ROOT_OFFSET = 1000;
 }
 
 #endif //CHAT_CONFIG_H

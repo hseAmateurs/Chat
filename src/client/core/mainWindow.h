@@ -24,12 +24,14 @@ private:
 
     bool isChatMode;
 
-    QVector<QPair<int, QWidget *>> currentFolder; // (currentFolderId, pageParent)s
+    QVector<int> currentFolder;
 
     // Возвращает уровень текущего слоя в StackLayout
-    int getPos() { return currentFolder.last().first; }
+    int getPos() { return currentFolder.last(); }
 
     void openChat(int chatId, const QString &folderName);
+
+    int rootId;
 
 signals:
     void sayHello();

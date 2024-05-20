@@ -55,6 +55,10 @@ public:
     // Возвращает пользователей, для которых папка явялется корневой
     bool getRootFolderUsers(int currentDirId, QVector<QPair<int, QString>> &users);
 
+    bool isChainExist(int userId, int folderId);
+
+    int getNextFolderId();
+
 
 private:
     QSqlDatabase db;
