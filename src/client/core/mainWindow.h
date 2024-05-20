@@ -16,9 +16,13 @@ public:
 
     ~MainWindow();
 
+    void update();
+
 private:
     Ui::MainWindow *ui;
     ChatWindow *chatWindow;
+
+    bool isChatMode;
 
     QVector<QPair<int, QWidget *>> currentFolder; // (currentFolderId, pageParent)s
 
@@ -26,6 +30,9 @@ private:
     int getPos() { return currentFolder.last().first; }
 
     void openChat(int chatId, const QString &folderName);
+
+signals:
+    void sayHello();
 
 public slots:
 

@@ -20,10 +20,15 @@ Q_OBJECT
 public:
     explicit ChatWindow(int folderId, const QString &folderName, QWidget *parent = nullptr);
 
-    void sendMessage(int from, QString message); // function, which sends a message on the screen
+    void sendMessage(int from, QString message);
+
     ~ChatWindow();
 
     void updateChat(bool onlyLast);
+
+signals:
+
+    void sentMsg();
 
 private:
     Ui::ChatWindow *ui;

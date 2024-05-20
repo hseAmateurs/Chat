@@ -92,8 +92,10 @@ void ChatWindow::on_pushButton_2_clicked() {
 void ChatWindow::on_pushButton_clicked() {
     QString message = ui->message->toPlainText();
     if (message.isEmpty()) return;
+
     Cacher::instance().sendMsg(folderId, message);
     sendMessage(0, message);
+    emit sentMsg();
 }
 
 void ChatWindow::updateChat(bool onlyLast) {

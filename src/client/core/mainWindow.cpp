@@ -22,8 +22,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::openChat(int chatId, const QString &folderName) {
     chatWindow = new ChatWindow(chatId, folderName, this);
+    QObject::connect(chatWindow, &ChatWindow::sentMsg, this, &MainWindow::sayHello);
+    QObject::connect(chatWindow, &ChatWindow::finished, this, [this]() { isChatMode = false; });
     chatWindow->setModal(true);
     chatWindow->open();
+    isChatMode = true;
 }
 
 void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
@@ -61,6 +64,7 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
 
             Cacher::instance().deleteFolder(folderWidget->id());
             renderStackLayout(getPos());
+            emit sayHello();
         });
         QObject::connect(ui->chatButton, &QPushButton::clicked, [this, folderWidget]() {
             if (getPos() == folderWidget->id())
@@ -86,6 +90,7 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
 
             Cacher::instance().deleteUser(userWidget->id(), getPos());
             renderStackLayout(getPos());
+            emit sayHello();
         });
 
         column++;
@@ -104,7 +109,7 @@ void MainWindow::on_backButton_clicked() {
     if (!getPos()) return;
     ui->stackedWidget->setCurrentWidget(currentFolder.last().second);
     currentFolder.pop_back();
-    renderStackLayout(getPos());
+    update();
 }
 
 void MainWindow::on_onlineButton_clicked() {
@@ -148,6 +153,7 @@ void MainWindow::on_onlineButton_clicked() {
     if (!selectedUsersIds.isEmpty()) {
         Cacher::instance().addUsersToFolder(selectedUsersIds, getPos());
         renderStackLayout(getPos());
+        emit sayHello();
     }
 }
 
@@ -156,8 +162,10 @@ void MainWindow::on_addFolderButton_clicked() {
     QString folderName = QInputDialog::getText(this, "Подтверждение действия", "Введите название папки",
                                                QLineEdit::Normal, "root", &ok);
     if (ok && !folderName.isEmpty()) {
-        if (Cacher::instance().createFolder(getPos(), folderName))
+        if (Cacher::instance().createFolder(getPos(), folderName)) {
             renderStackLayout(getPos());
+            emit sayHello();
+        }
         else
             QMessageBox::critical(nullptr, "Ошибка!", "Невозможно создать папку");
     }
@@ -171,6 +179,11 @@ void MainWindow::open() {
     ui->nameLabel->setFont(font);
 
     show();
+    emit sayHello();
+}
 
-
+void MainWindow::update() {
+    renderStackLayout(getPos());
+    if (isChatMode)
+        chatWindow->updateChat(true);
 }
