@@ -82,6 +82,7 @@ void LoginSystem::auth() {
 
     switch (Cacher::instance().isUserValid(login, pass)) {
         case cfg::OK:
+            Cacher::instance().setOnlineStatus(true);
             emit openMainWindow();
             break;
         case cfg::BAD_PASS:

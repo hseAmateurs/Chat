@@ -96,6 +96,7 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
 }
 
 MainWindow::~MainWindow() {
+    Cacher::instance().setOnlineStatus(false);
     delete ui;
 }
 
@@ -103,6 +104,7 @@ void MainWindow::on_backButton_clicked() {
     if (!getPos()) return;
     ui->stackedWidget->setCurrentWidget(currentFolder.last().second);
     currentFolder.pop_back();
+    renderStackLayout(getPos());
 }
 
 void MainWindow::on_onlineButton_clicked() {

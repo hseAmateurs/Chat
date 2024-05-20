@@ -28,7 +28,7 @@ public:
     bool getAuth(const QString &login, QString &password, int &userId);
 
     // Регистрирует нового пользователя в БД
-    bool addAuth(const QVector<QString> &data);
+    bool addAuth(const QString &login, const QString &pass, int &userId);
 
     bool getUserName(int userId, QString &username);
 
@@ -43,7 +43,7 @@ public:
     // Возвращает подпапки, вложенные в данную папку
     bool getSubFolders(int userId, int currentDirId, bool tree, QVector<QPair<int, QString>> &subFolders);
 
-    bool updateData(int id, const QString &key, const QString &value, const QString &tableName);
+    bool updateData(int id, const QString &key, const QVariant &value, const QString &tableName);
 
     // Создаёт новую папку
     bool addFolder(int userId, int parentId, const QString &name);

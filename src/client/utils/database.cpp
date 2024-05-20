@@ -66,21 +66,22 @@ bool Database::getAuth(const QString &login, QString &password, int &userId) {
 }
 
 // data = (id, login, pass)
-bool Database::addAuth(const QVector<QString> &data) {
-    qDebug() << "Database:" << "Adding auth data" << data;
+bool Database::addAuth(const QString &login, const QString &pass, int &userId) {
+    qDebug() << "Database:" << "Adding auth data" << login;
 
-    query.prepare("INSERT INTO User (id, login, password) VALUES (?, ?, ?)");
-    for (int i = 0; i < 3; ++i)
-        query.addBindValue(data[i]);
+    query.prepare("INSERT INTO User (login, password) VALUES (:login, :password)");
+    query.bindValue(":login", login);
+    query.bindValue(":password", pass);
 
     if (!query.exec()) {
         qDebug() << "Database:" << "Can't insert auth data" << db.lastError().text();
         return false;
     }
+    userId = query.lastInsertId().toInt();
 
-    query.prepare("INSERT INTO Person (userId, name) VALUES (?, ?)");
-    for (int i = 0; i < 2; ++i)
-        query.addBindValue(data[i]);
+    query.prepare("INSERT INTO Person (userId, name) VALUES (:userId, :name)");
+    query.bindValue(":userId", userId);
+    query.bindValue(":name", login);
 
     if (!query.exec()) {
         qDebug() << "Database:" << "Can't insert person data" << db.lastError().text();
@@ -163,7 +164,7 @@ bool Database::multiRemoving(int userId, const QString &tableName, const QVector
     return true;
 }
 
-bool Database::updateData(int id, const QString &key, const QString &value, const QString &tableName) {
+bool Database::updateData(int id, const QString &key, const QVariant &value, const QString &tableName) {
     qDebug() << "Database:" << "Renaming for" << id << "-" << key << "-" << value
              << "-" << tableName;
 

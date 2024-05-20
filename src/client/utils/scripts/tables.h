@@ -9,7 +9,7 @@
 #include <QVector>
 
 const QString USER = "CREATE TABLE User ("
-                     "id INTEGER PRIMARY KEY,"
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                      "login TEXT UNIQUE,"
                      "password TEXT,"
                      "isOnline INTEGER DEFAULT 0"
