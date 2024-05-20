@@ -12,7 +12,7 @@ const QString USER = "CREATE TABLE User ("
                      "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                      "login TEXT UNIQUE,"
                      "password TEXT,"
-                     "isOnline INTEGER DEFAULT 0"
+                     "isOnline INTEGER DEFAULT 1"
                      ");";
 
 const QString PERSON = "CREATE TABLE Person ("

@@ -29,7 +29,7 @@ public:
 
     void loadConfig(const QString &exePath);
 
-    bool setOnlineStatus(bool isOnline) { return db.updateData(userId, "id", isOnline, "User"); };
+    bool setOnlineStatus(bool isOnline) { return db.updateData(userId, "isOnline", isOnline, "User"); };
 
     // Проверка корректности данных авторизации, при успехе записывает userId текущего пользователя
     cfg::auth isUserValid(const QString &login, const QString &password);
