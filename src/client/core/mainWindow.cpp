@@ -18,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent)
                                  "Вы не можете написать в корень чата. Перейдите в любую папку");
         }
     });
+
+    QObject::connect(&server, &Server::messageReceived, this, &MainWindow::update);
+    QObject::connect(this, &MainWindow::sayHello, &server, &Server::sendMessage);
+    server.connectToServer("127.0.0.1", 1234);
 }
 
 void MainWindow::openChat(int chatId, const QString &folderName) {
@@ -68,7 +72,9 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
         QObject::connect(ui->backButton, &QPushButton::clicked, folderWidget, &FolderWidget::deselect);
         QObject::connect(ui->deleteButton, &QPushButton::clicked, folderWidget, [this, folderWidget]() {
             if (!folderWidget->isSelected()) return;
+            folderWidget->deselect();
 
+            qDebug() << "Delete " << folderWidget->id();
             Cacher::instance().deleteFolder(folderWidget->id());
             renderStackLayout(getPos());
             emit sayHello();
@@ -94,6 +100,7 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
         QObject::connect(ui->backButton, &QPushButton::clicked, userWidget, &FolderWidget::deselect);
         QObject::connect(ui->deleteButton, &QPushButton::clicked, userWidget, [this, userWidget]() {
             if (!userWidget->isSelected()) return;
+            userWidget->deselect();
 
             Cacher::instance().deleteUser(userWidget->id(), getPos());
             renderStackLayout(getPos());
@@ -196,6 +203,10 @@ void MainWindow::open() {
 }
 
 void MainWindow::update() {
+    if(!isVisible()) {
+        qDebug() << "Not visible";
+        return;
+    }
     renderStackLayout(getPos());
     if (isChatMode)
         chatWindow->updateChat(true);

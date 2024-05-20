@@ -13,11 +13,6 @@ int main(int argc, char *argv[]) {
 
     // Инициализация основго окна
     MainWindow w;
-    QObject::connect(&w, &MainWindow::sayHello, []() {
-        qDebug() << "Say Hello!";
-    });
-
-    //w.update();
 
     // Запуск окна авторизации
     auto *loginWindow = new LoginSystem();

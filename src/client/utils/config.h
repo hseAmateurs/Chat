@@ -25,6 +25,10 @@ namespace cfg {
     }
 
     const int ROOT_OFFSET = 1000;
+
+    namespace network {
+        const QByteArray HELLO_CODE = "A";
+    }
 }
 
 #endif //CHAT_CONFIG_H

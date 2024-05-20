@@ -7,7 +7,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(QT NAMES Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt5 COMPONENTS Widgets Sql REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Sql Network REQUIRED)
 
 set(SOURCES
         client.cpp
@@ -19,6 +19,11 @@ set(SOURCES
         core/chatWindow.h
 
 )
+
+set(NETWORK
+        network/server.h
+)
+
 
 set(UTILS
         utils/config.h
@@ -47,7 +52,8 @@ add_executable(Client
         ${UTILS}
         ${UI_FILES}
         ${WIDGETS}
+        ${NETWORK}
         textures/res.qrc
 )
 
-target_link_libraries(Client PRIVATE Qt5::Widgets Qt5::Sql)
+target_link_libraries(Client PRIVATE Qt5::Widgets Qt5::Sql Qt5::Network)

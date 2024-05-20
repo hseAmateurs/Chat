@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "chatWindow.h"
+#include "../network/server.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,8 +16,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
 
     ~MainWindow();
-
-    void update();
 
 private:
     Ui::MainWindow *ui;
@@ -32,13 +31,17 @@ private:
     void openChat(int chatId, const QString &folderName);
 
     int rootId;
+    Server server;
 
 signals:
+
     void sayHello();
 
 public slots:
 
     void open();
+
+    void update();
 
 private slots:
 
