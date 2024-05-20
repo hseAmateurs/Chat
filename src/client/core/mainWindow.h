@@ -20,8 +20,9 @@ private:
     Ui::MainWindow *ui;
     ChatWindow *chatWindow;
 
-    QVector<QPair<int, QWidget *>> currentFolder; // currentFolderId, pageParent
+    QVector<QPair<int, QWidget *>> currentFolder; // (currentFolderId, pageParent)s
 
+    // Возвращает уровень текущего слоя в StackLayout
     int getPos() { return currentFolder.last().first; }
 
     void openChat(int chatId, const QString &folderName);

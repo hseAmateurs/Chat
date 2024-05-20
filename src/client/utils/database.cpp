@@ -90,19 +90,6 @@ bool Database::addAuth(const QVector<QString> &data) {
     return true;
 }
 
-QString Database::getLastMsgTime(const int userId) {
-    qDebug() << "Database:" << "Getting last sendTime from Message for" << userId;
-    query.prepare("SELECT * FROM Message WHERE userId=:userId ORDER BY updateTime DESC LIMIT 1");
-    query.bindValue(":userId", userId);
-
-    if (!query.exec()) {
-        qDebug() << "Database:" << "Can't get sendTime" << db.lastError().text();
-        return "";
-    }
-
-    return query.next() ? query.value("sendTime").toString() : "";
-}
-
 bool Database::addFolder(const int userId, const int parentId, const QString &name) {
     qDebug() << "Database:" << "Adding folder for" << userId << "-" << name << "-" << parentId;
 

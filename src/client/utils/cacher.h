@@ -9,8 +9,15 @@
 
 #include "database.h"
 
+/*
+ * Класс для управления данными приложения.
+ * Связывает интерфейс с локальной БД
+ */
 class Cacher {
 public:
+    // Поскольку класс является standalone, то должен существовать только единственный экземпляр,
+    // для этого удаляем конструкторы копирования и оператор присваивания, а также делаем
+    // конструктор инициализации приватным
     Cacher(Cacher const &) = delete;
 
     Cacher &operator=(Cacher const &) = delete;
@@ -22,15 +29,12 @@ public:
 
     void loadConfig(const QString &exePath);
 
+    // Проверка корректности данных авторизации, при успехе записывает userId текущего пользователя
     cfg::auth isUserValid(const QString &login, const QString &password);
-
-    // data = (id, login, pass)
-    bool auth(const QVector<QString> &data) { return db.addAuth(data); }
-
-    void actualizeData();
 
     bool getSubFolders(int currentId, QVector<QPair<int, QString>> &subFolders);
 
+    // Получение участников текущей папки (возвращает только тех, для кого это корень)
     bool getUserOwners(int currentId, QVector<QPair<int, QString>> &users);
 
     bool getOnlineUsers(QVector<QPair<int, QString>> &users);

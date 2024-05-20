@@ -27,17 +27,12 @@ public:
 
     bool getAuth(const QString &login, QString &password, int &userId);
 
+    // Регистрирует нового пользователя в БД
     bool addAuth(const QVector<QString> &data);
 
     bool getUserName(int userId, QString &username);
 
-    QString getLastMsgTime(int userId);
-
     bool getOnlineUsers(QVector<QPair<int, QString>> &users);
-
-    // Перезаписывает таблицу
-    // TODO
-    bool rewriteTable(int userId, const QString &tableName) { return false; };
 
     bool addMsg(int userId, int folderId, const QString &text);
 
@@ -50,6 +45,7 @@ public:
 
     bool updateData(int id, const QString &key, const QString &value, const QString &tableName);
 
+    // Создаёт новую папку
     bool addFolder(int userId, int parentId, const QString &name);
 
     // Добавляет все связи (включая связи с подпапками)
