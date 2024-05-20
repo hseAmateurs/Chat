@@ -4,7 +4,6 @@
 
 #include "utils/cacher.h"
 #include "core/loginSystem.h"
-#include "core/chatWindow.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
@@ -22,11 +21,3 @@ int main(int argc, char *argv[]) {
 
     return a.exec();
 }
-
-/* TODO:
- * Создать класс network, который будет:
- * 1) Обновлять локальную БД
- * 2) Отправлять запросы на сервер от Cacher
- * 3) Устанавливать статус offline/online
- * 4) Обмениваться в online режиме сообщениями
- */

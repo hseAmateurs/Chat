@@ -36,9 +36,7 @@ public:
 
     bool addMsg(int userId, int folderId, const QString &text);
 
-    // Возвращает все сообщения из текущей папки (включая подпапки)
-    // TODO (структуру для сообщений)
-    bool getMsgs(int folderId, QVector<QVector<QString>> &msgs);
+    bool getMsgs(int folderId, QVector<QPair<int, QString>> &msgs, QString &lastMsgTime);
 
     // Возвращает подпапки, вложенные в данную папку
     bool getSubFolders(int userId, int currentDirId, bool tree, QVector<QPair<int, QString>> &subFolders);

@@ -197,29 +197,36 @@ bool Database::addMsg(int userId, int folderId, const QString &text) {
     return true;
 }
 
-bool Database::getMsgs(const int folderId, QVector<QVector<QString>> &msgs) {
+bool Database::getMsgs(int folderId, QVector<QPair<int, QString>> &msgs, QString &lastMsgTime) {
     qDebug() << "Database:" << "Getting messages from folder" << folderId;
 
     QVector<QPair<int, QString>> folders;
     getSubFolders(-1, folderId, true, folders);
 
-    QString queryStr = "SELECT * FROM Message WHERE chatId IN (";
+    QString queryStr = "SELECT * FROM Message WHERE folderId IN (";
 
     QStringList idList;
+    qDebug() << folders;
     for (const auto &folder: folders) {
         idList.append(QString::number(folder.first));
     }
     queryStr += idList.join(", ");
-    queryStr += ")";
+    queryStr += ") AND sendTime > :lastTime";
 
-    if (!query.exec(queryStr)) {
+    qDebug() << queryStr;
+    query.prepare(queryStr);
+    query.bindValue(":lastTime", lastMsgTime);
+
+    if (!query.exec()) {
         qDebug() << "Database:" << "Can't get messages" << db.lastError().text();
         return false;
     }
 
     while (query.next()) {
-        // Handling
-        // qDebug() << query.value();
+        int userId = query.value("userId").toInt();
+        QString text = query.value("text").toString();
+        msgs.append({userId, text});
+        lastMsgTime = query.value("sendTime").toString();
     }
 
     return true;

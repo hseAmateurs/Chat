@@ -19,8 +19,11 @@ Q_OBJECT
 
 public:
     explicit ChatWindow(int folderId, const QString &folderName, QWidget *parent = nullptr);
-    void sendMessage(int from, double time, std::string text); // function, which sends a message on the screen
+
+    void sendMessage(int from, QString message); // function, which sends a message on the screen
     ~ChatWindow();
+
+    void updateChat(bool onlyLast);
 
 private:
     Ui::ChatWindow *ui;
@@ -29,6 +32,7 @@ private:
     QHBoxLayout *hlay2;
     QScrollArea *scroll;
     int folderId;
+    QString lastMsgTime;
     //TextArea *textArea;
 
 private slots:

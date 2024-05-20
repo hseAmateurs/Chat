@@ -43,7 +43,7 @@ public:
 
     bool addUsersToFolder(const QVector<int> &invitedUsersIds, int folderId);
 
-    bool registerUser(const QString& login, const QString& password);
+    bool registerUser(const QString &login, const QString &password);
 
     QString getUserName();
 
@@ -52,6 +52,14 @@ public:
     bool createFolder(int parentId, const QString &folderName);
 
     bool deleteUser(int userId, int folderId);
+
+    bool sendMsg(int folderId, const QString &text) { return db.addMsg(userId, folderId, text); };
+
+    bool getLastMsgs(int folderId, QVector<QPair<int, QString>> &msgs, QString &lastMsgTime) {
+        return db.getMsgs(folderId, msgs, lastMsgTime);
+    };
+
+    int getUserId() { return userId; }
 
 private:
     int userId;
