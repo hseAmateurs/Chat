@@ -11,7 +11,6 @@ void handleClient(SOCKET clientSocket, std::mutex& mtx, std::vector<SOCKET>& cli
     while (true) {
         char buffer[1];
         int result = recv(clientSocket, buffer, sizeof(buffer), 0);
-        std::cout << result << "\n";
         if (result > 0) {
             // Обработка принятого сообщения (в данном примере просто отправляем его всем клиентам)
             std::lock_guard<std::mutex> lock(mtx);
