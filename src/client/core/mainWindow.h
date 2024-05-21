@@ -28,7 +28,7 @@ private:
     // Возвращает уровень текущего слоя в StackLayout
     int getPos() { return currentFolder.last(); }
 
-    void openChat(int chatId, const QString &folderName);
+    void openChat(bool isPersonal, int chatId, const QString &folderName);
 
     int rootId;
     Server server;

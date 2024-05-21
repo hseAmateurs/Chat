@@ -18,7 +18,7 @@ class ChatWindow : public QDialog {
 Q_OBJECT
 
 public:
-    explicit ChatWindow(int folderId, const QString &folderName, QWidget *parent = nullptr);
+    explicit ChatWindow(bool isPersonal, int folderId, const QString &folderName, QWidget *parent = nullptr);
 
     void sendMessage(int from, QString message);
 
@@ -38,6 +38,7 @@ private:
     QScrollArea *scroll;
     int folderId;
     QString lastMsgTime;
+    bool isPersonal;
     //TextArea *textArea;
 
 private slots:

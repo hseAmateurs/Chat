@@ -53,13 +53,17 @@ public:
 
     bool deleteUser(int userId, int folderId);
 
-    bool sendMsg(int folderId, const QString &text) { return db.addMsg(userId, folderId, text); };
-
-    bool getLastMsgs(int folderId, QVector<QPair<int, QString>> &msgs, QString &lastMsgTime) {
-        return db.getMsgs(folderId, msgs, lastMsgTime);
+    bool sendMsg(bool isPersonal, int folderId, const QString &text) {
+        if (!isPersonal) return db.addMsg(userId, folderId, text);
+        else return db.addMsg(userId, ((folderId * 13) ^ (userId * 13)), text);
     };
 
-    int getUserId() { return userId; }
+    bool getLastMsgs(bool isPersonal, int folderId, QVector<QPair<int, QString>> &msgs, QString &lastMsgTime) {
+        if (!isPersonal) return db.getMsgs(isPersonal, folderId, msgs, lastMsgTime);
+        return db.getMsgs(isPersonal, ((folderId * 13) ^ (userId * 13)), msgs, lastMsgTime);
+    };
+
+    int getUserId() const { return userId; }
 
     bool isChainExist(int folderId) { return db.isChainExist(userId, folderId); }
 

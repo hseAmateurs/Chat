@@ -36,7 +36,7 @@ public:
 
     bool addMsg(int userId, int folderId, const QString &text);
 
-    bool getMsgs(int folderId, QVector<QPair<int, QString>> &msgs, QString &lastMsgTime);
+    bool getMsgs(bool isPersonal, int folderId, QVector<QPair<int, QString>> &msgs, QString &lastMsgTime);
 
     // Возвращает подпапки, вложенные в данную папку
     bool getSubFolders(int userId, int currentDirId, bool tree, QVector<QPair<int, QString>> &subFolders);

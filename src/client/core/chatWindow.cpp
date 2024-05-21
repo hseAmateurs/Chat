@@ -6,8 +6,8 @@
 #include <QFont>
 #include <QScrollBar>
 
-ChatWindow::ChatWindow(int folderId, const QString &folderName, QWidget *parent) :
-        QDialog(parent), folderId(folderId), lastMsgTime(""),
+ChatWindow::ChatWindow(bool isPersonal, int folderId, const QString &folderName, QWidget *parent) :
+        QDialog(parent), folderId(folderId), lastMsgTime(""), isPersonal(isPersonal),
         ui(new Ui::ChatWindow) {
     ui->setupUi(this);
     ui->label->setText(folderName);
@@ -93,14 +93,14 @@ void ChatWindow::on_pushButton_clicked() {
     QString message = ui->message->toPlainText();
     if (message.isEmpty()) return;
 
-    Cacher::instance().sendMsg(folderId, message);
+    Cacher::instance().sendMsg(isPersonal, folderId, message);
     sendMessage(0, message);
     emit sentMsg();
 }
 
 void ChatWindow::updateChat(bool onlyLast) {
     QVector<QPair<int, QString>> msgs;
-    Cacher::instance().getLastMsgs(folderId, msgs, lastMsgTime);
+    Cacher::instance().getLastMsgs(isPersonal, folderId, msgs, lastMsgTime);
     for (auto &msg: msgs) {
         if (onlyLast) {
             if (msg.first != Cacher::instance().getUserId())

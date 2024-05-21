@@ -255,11 +255,13 @@ bool Database::addMsg(int userId, int folderId, const QString &text) {
     return true;
 }
 
-bool Database::getMsgs(int folderId, QVector<QPair<int, QString>> &msgs, QString &lastMsgTime) {
+bool Database::getMsgs(bool isPersonal, int folderId, QVector<QPair<int, QString>> &msgs, QString &lastMsgTime) {
     qDebug() << "Database:" << "Getting messages from folder" << folderId;
 
     QVector<QPair<int, QString>> folders;
-    getSubFolders(-1, folderId, true, folders);
+    if (!isPersonal)
+        getSubFolders(-1, folderId, true, folders);
+    else folders.append({folderId, ""});
 
     QString queryStr = "SELECT * FROM Message WHERE folderId IN (";
 

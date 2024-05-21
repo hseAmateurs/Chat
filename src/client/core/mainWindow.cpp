@@ -24,8 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
     server.connectToServer("127.0.0.1", 1234);
 }
 
-void MainWindow::openChat(int chatId, const QString &folderName) {
-    chatWindow = new ChatWindow(chatId, folderName, this);
+void MainWindow::openChat(bool isPersonal, int chatId, const QString &folderName) {
+    chatWindow = new ChatWindow(isPersonal, chatId, folderName, this);
     QObject::connect(chatWindow, &ChatWindow::sentMsg, this, &MainWindow::sayHello);
     QObject::connect(chatWindow, &ChatWindow::finished, this, [this]() { isChatMode = false; });
     chatWindow->setModal(true);
@@ -81,7 +81,7 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
         });
         QObject::connect(ui->chatButton, &QPushButton::clicked, folderWidget, [this, folderWidget]() {
             if (getPos() == folderWidget->id() && !isChatMode)
-                openChat(folderWidget->id(), folderWidget->name());
+                openChat(false, folderWidget->id(), folderWidget->name());
         });
 
         column++;
@@ -96,7 +96,7 @@ void MainWindow::renderStackLayout(int curDirId, QWidget *parentPage) {
         auto *userWidget = new UserWidget(user);
         gridLayoutRoot->addWidget(userWidget, row, column);
         QObject::connect(userWidget, &FolderWidget::clicked,
-                         [this, userWidget]() { openChat(userWidget->id(), userWidget->name()); });
+                         [this, userWidget]() { openChat(true, userWidget->id(), userWidget->name()); });
         QObject::connect(ui->backButton, &QPushButton::clicked, userWidget, &FolderWidget::deselect);
         QObject::connect(ui->deleteButton, &QPushButton::clicked, userWidget, [this, userWidget]() {
             if (!userWidget->isSelected()) return;
