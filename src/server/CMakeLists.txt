@@ -5,3 +5,4 @@ project(Server)
 add_executable(Server server.cpp)
 
 target_link_libraries(Server PRIVATE ws2_32)
+target_link_libraries(Server PRIVATE -static)

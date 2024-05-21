@@ -47,7 +47,7 @@ set(WIDGETS
         widgets/userWidget.h
 )
 
-add_executable(Client
+add_executable(Client WIN32
         ${SOURCES}
         ${UTILS}
         ${UI_FILES}
