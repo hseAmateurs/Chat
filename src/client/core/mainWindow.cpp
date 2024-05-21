@@ -131,7 +131,7 @@ void MainWindow::on_backButton_clicked() {
 }
 
 void MainWindow::on_onlineButton_clicked() {
-    if (currentFolder.size() <= 2) {
+    if (currentFolder.size() <= 1) {
         QMessageBox::warning(nullptr, "Предупреждение!",
                              "Вы не можете добавить пользователей в первый слой или корень. Создайте подпапку");
         return;

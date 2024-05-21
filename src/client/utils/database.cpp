@@ -98,7 +98,7 @@ int Database::getNextFolderId() {
         qDebug() << "Database:" << "Can't get max folder id" << db.lastError().text();
         return -1;
     }
-    if(!t_query.next()) {
+    if (!t_query.next()) {
         qDebug() << "No query";
         return -1;
     }
@@ -157,31 +157,28 @@ bool Database::addFolderChain(int parentUserId, int newUserId, int folderId) {
     if (!query.next()) return false;
 
     int parentFolderId = -1; // > 1000 skip
-    QString name;
+    bool isRootChain = false;
+    QString name = query.value("name").toString();
     do {
-        if (query.value("parentId").toInt() > 1000) continue;
+        if (query.value("parentId").toInt() > 1000) {
+            if (query.value("parentId").toInt() == newUserId + cfg::ROOT_OFFSET)
+                isRootChain = true;
+            continue;
+        }
         parentFolderId = query.value("parentId").toInt();
-        name = query.value("name").toString();
     } while (query.next());
     qDebug() << parentFolderId;
-    if (parentFolderId == -1) return true;
+    if (parentFolderId == -1 && isRootChain)
+        return true;
 
-    query.prepare("SELECT * FROM FolderUser WHERE userId = :userId AND folderId=:folderId");
-    query.bindValue(":folderId", parentFolderId);
-    query.bindValue(":userId", newUserId);
-
-    if (!query.exec()) {
-        qDebug() << "Database:" << "Can't get existing chains" << db.lastError().text();
-        return false;
-    }
-
-    if(query.next()) return true;
+    if (isChainExist(newUserId, parentFolderId))
+        return true;
 
     query.prepare("INSERT INTO Folder (id, parentId, name) VALUES (:id, :parentId, :name)");
     query.bindValue(":id", folderId);
     query.bindValue(":parentId", newUserId + cfg::ROOT_OFFSET);
     query.bindValue(":name", name);
-
+    qDebug() << folderId << newUserId + cfg::ROOT_OFFSET << name;
     if (!query.exec()) {
         qDebug() << "Database:" << "Can't insert new chain" << db.lastError().text();
         return false;
@@ -369,22 +366,19 @@ bool Database::getRootFolderUsers(int currentDirId, QVector<QPair<int, QString>>
     }
     if (!query.next()) return true;
 
-    int parentFolderId = -1; // > 1000 skip
+    QStringList idList;
     do {
-        if (query.value("parentId").toInt() > 1000) continue;
-        parentFolderId = query.value("parentId").toInt();
+        idList.append(query.value("parentId").toString());
     } while (query.next());
 
-    qDebug() << "FolderParentID is" << parentFolderId;
-    if (parentFolderId == -1) return false;
+    qDebug() << "FolderParentID is" << idList;
 
     query.prepare("SELECT fu.userId "
                   "FROM FolderUser fu WHERE fu.userId NOT IN "
-                  "(SELECT userId FROM FolderUser WHERE folderId = :parentId) "
+                  "(SELECT userId FROM FolderUser WHERE folderId IN (" + idList.join(", ") + ")) "
                   "AND fu.folderId = :currentId");
 
     query.bindValue(":currentId", currentDirId);
-    query.bindValue(":parentId", parentFolderId);
 
     if (!query.exec()) {
         qDebug() << "Database:" << "Can't get parentFolderId" << db.lastError().text();
