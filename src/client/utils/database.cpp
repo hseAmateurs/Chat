@@ -3,13 +3,20 @@
 //
 
 #include <QQueue>
+#include <QStandardPaths>
 
 #include "database.h"
 
 #include "scripts/tables.h"
 
 void Database::connect(const QString &dirPath) {
-    dbPath = dirPath + QDir::separator() + cfg::database::FILENAME;
+    dbPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QDir::separator()
+             + cfg::database::FILENAME;
+    QFile dbFile(dirPath + QDir::separator() + cfg::database::FILENAME);
+    if (!dbFile.exists()) {
+        dbFile.open(QIODevice::ReadWrite);
+        dbFile.close();
+    }
 
     qDebug() << "Database:" << "Connecting to db:" << dbPath;
     if (!QFile(dbPath).exists()) {
@@ -376,7 +383,7 @@ bool Database::getRootFolderUsers(int currentDirId, QVector<QPair<int, QString>>
     query.prepare("SELECT fu.userId "
                   "FROM FolderUser fu WHERE fu.userId NOT IN "
                   "(SELECT userId FROM FolderUser WHERE folderId IN (" + idList.join(", ") + ")) "
-                  "AND fu.folderId = :currentId");
+                                                                                             "AND fu.folderId = :currentId");
 
     query.bindValue(":currentId", currentDirId);
 

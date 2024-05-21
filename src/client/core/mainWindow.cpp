@@ -131,9 +131,9 @@ void MainWindow::on_backButton_clicked() {
 }
 
 void MainWindow::on_onlineButton_clicked() {
-    if (currentFolder.size() <= 1) {
+    if (getPos() == rootId) {
         QMessageBox::warning(nullptr, "Предупреждение!",
-                             "Вы не можете добавить пользователей в первый слой или корень. Создайте подпапку");
+                             "Вы не можете добавить пользователей в корень чата. Создайте папку");
         return;
     }
 
